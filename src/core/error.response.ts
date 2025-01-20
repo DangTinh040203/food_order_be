@@ -50,9 +50,7 @@ export class ForbiddenError extends ErrorResponse {
 }
 
 export class InternalServerError extends ErrorResponse {
-  constructor(
-    message: string = getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
-  ) {
+  constructor(message: string = getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR)) {
     super(message, StatusCodes.INTERNAL_SERVER_ERROR);
   }
 }

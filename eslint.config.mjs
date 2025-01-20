@@ -25,12 +25,7 @@ const eslintConfig = [
     'plugin:import/typescript',
     'plugin:prettier/recommended',
   ),
-  ...compat.plugins(
-    'immer',
-    'import',
-    'simple-import-sort',
-    '@typescript-eslint',
-  ),
+  ...compat.plugins('immer', 'import', 'simple-import-sort', '@typescript-eslint'),
   {
     files: ['**/*.{js,mjs,cjs,ts,tsx}'],
     languageOptions: {

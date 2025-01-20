@@ -4,11 +4,7 @@ import { DiscordLoggerService } from '@/logger/discord.log';
 
 const logger = new DiscordLoggerService();
 
-export const pushLogToDiscord = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const pushLogToDiscord = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.sendFormatCodeMsg({
       title: `Method: [${req.method}]`,

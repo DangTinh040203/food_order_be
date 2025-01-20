@@ -16,6 +16,6 @@
     },
     "typeRoots": ["./node_modules/@types", "./src/@types/*"]
   },
-  "include": ["src/**/*.ts", "./eslint.config.mjs"],
+  "include": ["src/**/*.ts", "./eslint.config.mjs", "src/helpers/_blank"],
   "exclude": ["node_modules", "dist"]
 }
