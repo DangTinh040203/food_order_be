@@ -4,7 +4,6 @@ import config from '@/configs/app.config';
 
 type DB = 'mongo' | 'mysql';
 
-const dbConnection = `mongodb+srv://${config.db.dbUserName}:${config.db.dbPassword}@${config.db.dbName}.r3wrt.mongodb.net/${config.db.dbName}?retryWrites=true&w=majority`;
 class Database {
   constructor() {
     this.connect();
@@ -16,7 +15,7 @@ class Database {
     switch (type) {
       case 'mongo':
         mongoose
-          .connect(dbConnection)
+          .connect(config.db.connectionString)
           .then(() => {
             console.log('Connected to MongoDB');
           })

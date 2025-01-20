@@ -2,7 +2,8 @@ import type { JwtPayload } from 'jsonwebtoken';
 import type { Server } from 'socket.io';
 
 declare global {
-  let _io: Server;
+  // eslint-disable-next-line no-var
+  var _io: Server | undefined;
 
   namespace Express {
     interface Request {

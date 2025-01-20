@@ -8,9 +8,7 @@ interface Config {
     host: string;
   };
   db: {
-    dbUserName: string;
-    dbPassword: string;
-    dbName: string;
+    connectionString: string;
   };
 }
 
@@ -20,9 +18,7 @@ const dev: Config = {
     host: process.env.DEV_APP_HOST ?? 'localhost',
   },
   db: {
-    dbUserName: process.env.MONGO_DB_USER_NAME!,
-    dbPassword: process.env.MONGO_DB_PASSWORD!,
-    dbName: process.env.MONGO_DB_NAME!,
+    connectionString: process.env.MONGO_DB_CONNECTION_STRING!,
   },
 };
 
@@ -32,9 +28,7 @@ const prod: Config = {
     host: process.env.PROD_APP_HOST ?? 'localhost',
   },
   db: {
-    dbUserName: process.env.MONGO_DB_USER_NAME!,
-    dbPassword: process.env.MONGO_DB_PASSWORD!,
-    dbName: process.env.MONGO_DB_NAME!,
+    connectionString: process.env.MONGO_DB_CONNECTION_STRING!,
   },
 };
 

@@ -9,7 +9,6 @@ export class CustomError extends Error {
     super(message);
     this.status = status;
     Object.setPrototypeOf(this, CustomError.prototype);
-
     logger.error(`${Date.now()} - ${this.status} - ${message}`);
   }
 }
