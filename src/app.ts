@@ -11,6 +11,7 @@ import morgan from 'morgan';
 import { corsConfig } from '@/configs/cors.config';
 import ErrorHandling from '@/middlewares/errorHandling.middleware';
 import { pushLogToDiscord } from '@/middlewares/logger.middleware';
+import { setupSocketIoMiddleware } from '@/middlewares/socket.middleware';
 import router from '@/routes';
 
 dotenv.config();
@@ -25,6 +26,8 @@ class Server {
 
   setupApplication() {
     this.configureMiddlewares();
+    this.customMiddleware();
+
     this.configureRoutes();
     this.configureErrorHandling();
   }
@@ -37,7 +40,11 @@ class Server {
     this.app.use(cookieParser());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+  }
+
+  customMiddleware() {
     this.app.use(pushLogToDiscord);
+    this.app.use(setupSocketIoMiddleware);
   }
 
   configureRoutes() {
