@@ -9,7 +9,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import { corsConfig } from '@/configs/cors.config';
-import ErrorHandling from '@/middlewares/errorHandling';
+import ErrorHandling from '@/middlewares/errorHandling.middleware';
+import { pushLogToDiscord } from '@/middlewares/logger.middleware';
 import router from '@/routes';
 
 dotenv.config();
@@ -36,6 +37,7 @@ class Server {
     this.app.use(cookieParser());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(pushLogToDiscord);
   }
 
   configureRoutes() {
