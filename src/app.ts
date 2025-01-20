@@ -3,6 +3,7 @@
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import express, { type Express } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -10,6 +11,8 @@ import morgan from 'morgan';
 import { corsConfig } from '@/configs/cors.config';
 import ErrorHandling from '@/middlewares/errorHandling';
 import router from '@/routes';
+
+dotenv.config();
 
 class Server {
   app: Express = express();
