@@ -1,5 +1,7 @@
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
+import { logger } from '@/logger/winston.log';
+
 export class CustomError extends Error {
   status: number;
 
@@ -7,6 +9,8 @@ export class CustomError extends Error {
     super(message);
     this.status = status;
     Object.setPrototypeOf(this, CustomError.prototype);
+
+    logger.error(`${Date.now()} - ${this.status} - ${message}`);
   }
 }
 
