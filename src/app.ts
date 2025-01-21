@@ -1,4 +1,4 @@
-// import '@/dbs/init.mongodb';
+import '@/dbs/init.mongodb';
 
 import compression from 'compression';
 import cookieParser from 'cookie-parser';

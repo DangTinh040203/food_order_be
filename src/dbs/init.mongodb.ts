@@ -17,11 +17,11 @@ class Database {
         mongoose
           .connect(config.db.connectionString)
           .then(() => {
-            console.log('Connected to MongoDB');
+            console.log('[Database] Connected to MongoDB');
           })
           .catch((error) => {
-            console.log('Error connecting to MongoDB');
-            console.error(error);
+            console.error('🚀 ~ Database ~ connect ~ error:', error);
+            console.error('[Error] Error connecting to MongoDB');
           });
         break;
       case 'mysql':
