@@ -6,6 +6,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: food_order_user
       MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: food_order
     ports:
       - 27017:27017
     healthcheck:
