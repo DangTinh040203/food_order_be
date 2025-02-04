@@ -59,7 +59,7 @@ postSchema.pre('findOneAndUpdate', function (next) {
     $set?: { title?: string };
   }>;
 
-  const title: string = update?.title || update?.$set?.title;
+  const title: string = (update?.title || update?.$set?.title) as string;
   if (title) {
     if (update.$set) {
       update.$set.slug = slugify(title, {

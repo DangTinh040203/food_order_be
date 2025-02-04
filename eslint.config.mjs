@@ -40,7 +40,7 @@ const eslintConfig = [
       '@typescript-eslint/no-unsafe-return': 0,
       '@typescript-eslint/unbound-method': 0,
       '@typescript-eslint/no-unused-vars': 0,
-      '@typescript-eslint/no-unsafe-assignment': 0,
+      // '@typescript-eslint/no-unsafe-assignment': 0,
       '@typescript-eslint/no-unsafe-call': 0,
       'import/no-unresolved': 0,
       '@typescript-eslint/no-empty-interface': 'warn',
