@@ -20,7 +20,6 @@ class Database {
             console.log('[Database] Connected to MongoDB');
           })
           .catch((error) => {
-            console.error('🚀 ~ Database ~ connect ~ error:', error);
             console.error('[Error] Error connecting to MongoDB');
           });
         break;
