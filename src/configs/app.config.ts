@@ -18,7 +18,7 @@ const dev: Config = {
     host: process.env.DEV_APP_HOST ?? 'localhost',
   },
   db: {
-    connectionString: process.env.MONGO_DB_CONNECTION_STRING!,
+    connectionString: process.env.DEV_MONGO_DB_CONNECTION_STRING!,
   },
 };
 
@@ -28,16 +28,16 @@ const prod: Config = {
     host: process.env.PROD_APP_HOST ?? 'localhost',
   },
   db: {
-    connectionString: process.env.MONGO_DB_CONNECTION_STRING!,
+    connectionString: process.env.PROD_MONGO_DB_CONNECTION_STRING!,
   },
 };
 
-type Env = 'dev' | 'prod';
+export type Env = 'dev' | 'prod';
 
 const configs: Record<Env, Config> = {
   dev,
   prod,
 };
 
-const env: Env = (process.env.NODE_ENV as Env) ?? 'dev';
+const env: Env = (process.env.NODE_ENV as Env) || 'dev';
 export default configs[env];
