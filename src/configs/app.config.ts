@@ -32,7 +32,7 @@ const prod: Config = {
   },
 };
 
-type Env = 'dev' | 'prod';
+export type Env = 'dev' | 'prod';
 
 const configs: Record<Env, Config> = {
   dev,
