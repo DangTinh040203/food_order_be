@@ -8,11 +8,19 @@ import { FoodValidation } from '@/validations/food.validation';
 const router = express.Router();
 
 router.get('/', asyncHandler(foodController.get));
+
+router.patch(
+  '/update/:id',
+  validationRequest(FoodValidation.updateFoodSchema()),
+  asyncHandler(foodController.update),
+);
+
 router.delete(
   '/delete/:id',
   validationRequest(FoodValidation.deleteFoodSchema()),
   asyncHandler(foodController.delete),
 );
+
 router.post(
   '/insert',
   validationRequest(FoodValidation.insertFoodSchema()),

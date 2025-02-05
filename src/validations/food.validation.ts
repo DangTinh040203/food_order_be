@@ -26,4 +26,22 @@ export class FoodValidation {
       }),
     };
   }
+
+  static updateFoodSchema() {
+    return {
+      params: z.object({
+        id: z.string().refine(isValidObjectId, {
+          message: 'Invalid ObjectId format',
+        }),
+      }),
+      body: z.object({
+        name: z.string().optional(),
+        category: z.string().optional(),
+        description: z.string().optional(),
+        price: z.number().positive().optional(),
+        thumbnail: z.string().optional(),
+        isAvailable: z.boolean().optional(),
+      }),
+    };
+  }
 }

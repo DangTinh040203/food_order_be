@@ -30,7 +30,7 @@ services:
     ports:
       - 3000:3000
     profiles:
-    - prod
+      - prod
     depends_on:
       - mongodb
     env_file:

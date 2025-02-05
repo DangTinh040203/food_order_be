@@ -14,7 +14,11 @@ class FoodController {
     res.send(await foodService.insert(payload));
   }
 
-  async update(req: Request, res: Response) {}
+  async update(req: Request, res: Response) {
+    const id = convertObjectId(req.params.id);
+    const payload: Partial<Food> = req.body;
+    res.send(await foodService.update(id, payload));
+  }
 
   async delete(req: Request, res: Response) {
     const id = convertObjectId(req.params.id);

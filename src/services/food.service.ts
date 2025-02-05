@@ -38,7 +38,14 @@ class FoodService {
     return new OkResponse('Food deleted successfully', food);
   }
 
-  async update(req: Request, res: Response) {}
+  async update(foodId: Types.ObjectId, payload: Partial<Food>) {
+    const food = await foodModel.findByIdAndUpdate(foodId, payload, {
+      new: true,
+    });
+
+    if (!food) throw new NotFoundError('Food not found');
+    return new OkResponse('Food updated successfully', food);
+  }
 }
 
 const foodService = new FoodService();
