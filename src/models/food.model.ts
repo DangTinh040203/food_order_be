@@ -1,4 +1,9 @@
-import mongoose from 'mongoose';
+import mongoose, {
+  type InferSchemaType,
+  model,
+  type PaginateModel,
+} from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { FOOD_CATEGORY } from '@/constants';
 
@@ -18,17 +23,18 @@ const foodSchema = new mongoose.Schema(
     },
     description: {
       type: String,
+      default: '',
     },
     price: {
       type: Number,
       required: true,
     },
-    thumbnail_url: {
-      type: String,
-      required: true,
+    isAvailable: {
+      type: Boolean,
+      default: true,
     },
-    images_url: {
-      type: [String],
+    thumbnail: {
+      type: String,
       required: true,
     },
   },
@@ -38,4 +44,8 @@ const foodSchema = new mongoose.Schema(
   },
 );
 
-export const foodModel = mongoose.model(DOCUMENT_NAME, foodSchema);
+foodSchema.plugin(mongoosePaginate);
+
+export type Food = InferSchemaType<typeof foodSchema>;
+const foodModel = model<Food, PaginateModel<Food>>(DOCUMENT_NAME, foodSchema);
+export default foodModel;

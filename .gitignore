@@ -16,3 +16,4 @@ pnpm-error.log*
 .env*
 logs
 docker-compose.override.yml
+mongodb_data

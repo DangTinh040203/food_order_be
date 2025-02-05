@@ -1,6 +1,9 @@
 services:
   mongodb:
     image: mongo
+    profiles:
+      - prod
+      - dev
     restart: always
     container_name: mongodb_container
     environment:
@@ -9,6 +12,8 @@ services:
       MONGO_INITDB_DATABASE: food_order
     ports:
       - 27017:27017
+    volumes:
+      - ./mongodb_data:/data/db
     healthcheck:
       test: ['CMD', 'mongo', '--eval', "db.adminCommand('ping')"]
       interval: 10s
@@ -24,6 +29,8 @@ services:
     container_name: food-order-BE
     ports:
       - 3000:3000
+    profiles:
+    - prod
     depends_on:
       - mongodb
     env_file:
@@ -35,3 +42,6 @@ services:
 networks:
   food-order-network:
     driver: bridge
+
+volumes:
+  mongodb_data:

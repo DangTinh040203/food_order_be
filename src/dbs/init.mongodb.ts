@@ -17,7 +17,8 @@ class Database {
         mongoose
           .connect(config.db.connectionString)
           .then(() => {
-            console.log('[Database] Connected to MongoDB');
+            const NODE_ENV = process.env.NODE_ENV || 'dev';
+            console.log(`[Database - ${NODE_ENV}] Connected to MongoDB`);
           })
           .catch((error) => {
             console.error('[Error] Error connecting to MongoDB');

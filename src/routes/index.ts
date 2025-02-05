@@ -1,12 +1,9 @@
 import express from 'express';
 
-import { Test } from '@/models/test.model';
+import foodRoute from '@/routes/food.route';
 
 const router = express.Router();
 
-router.use('/test', async (req, res) => {
-  const oke = await Test.create({ name: 'Test' + req.body.name });
-  res.send('Hello World');
-});
+router.use('/food', foodRoute);
 
 export default router;
