@@ -5,11 +5,12 @@ import foodService from '@/services/food.service';
 import { convertObjectId } from '@/utils/convertObjectId';
 
 class FoodController {
-  async get(req: Request, res: Response) {}
+  async get(req: Request, res: Response) {
+    res.send(await foodService.get(req));
+  }
 
   async insert(req: Request, res: Response) {
     const payload: Omit<Food, 'id'> = req.body;
-    console.log('🚀 ~ FoodController ~ insert ~ payload:', payload);
     res.send(await foodService.insert(payload));
   }
 
