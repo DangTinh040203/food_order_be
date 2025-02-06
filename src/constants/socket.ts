@@ -3,3 +3,7 @@ export enum SOCKET_EVENTS {
   DISCONNECT = 'disconnect',
   CHAT_MSG = 'chat msg',
 }
+
+export enum SOCKET_ACTIONS {
+  INSERT_TABLE = 'INSERT_TABLE',
+}
