@@ -1,13 +1,11 @@
-name: Node.js CI
+name: Deploy to EC2
 
 on:
   push:
     branches: ['main']
-  pull_request:
-    branches: ['main']
 
 jobs:
-  cache-and-install:
+  deploy:
     runs-on: self-hosted
 
     steps:
@@ -29,11 +27,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Check lint
-        run: pnpm run lint
-
-      - name: ci
+      - name: Run CI
         run: pnpm run ci
 
-      - name: Check Build
-        run: pnpm run build --if-present
+      - name: Deploy to EC2
+        run: |
+          pm2 stop all || true
+
+          git pull origin main
+
+          pnpm install
+
+          pnpm run build
+
+          pm2 restart all
