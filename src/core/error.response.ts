@@ -9,7 +9,10 @@ export class CustomError extends Error {
     super(message);
     this.status = status;
     Object.setPrototypeOf(this, CustomError.prototype);
-    logger.error(`${Date.now()} - ${this.status} - ${message}`);
+
+    if (status === Number(StatusCodes.INTERNAL_SERVER_ERROR)) {
+      logger.error(`${Date.now()} - ${this.status} - ${message}`);
+    }
   }
 }
 
@@ -50,7 +53,9 @@ export class ForbiddenError extends ErrorResponse {
 }
 
 export class InternalServerError extends ErrorResponse {
-  constructor(message: string = getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR)) {
+  constructor(
+    message: string = getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
+  ) {
     super(message, StatusCodes.INTERNAL_SERVER_ERROR);
   }
 }

@@ -8,7 +8,12 @@ export default class ErrorHandling {
     next(new NotFoundError());
   }
 
-  static globalError(err: CustomError, req: Request, res: Response, next: NextFunction) {
+  static globalError(
+    err: CustomError,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     const status = err.status || StatusCodes.INTERNAL_SERVER_ERROR;
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status,

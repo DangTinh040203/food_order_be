@@ -22,8 +22,7 @@ export class UploadService {
         url: `${process.env.CLOUDFRONT_URL}/${imageName}`,
       });
     } catch (error) {
-      console.log('🚀 ~ UploadService ~ uploadImageFromLocal ~ error:', error);
-      throw new InternalServerError();
+      throw new InternalServerError('Something went wrong!');
     }
   }
 }

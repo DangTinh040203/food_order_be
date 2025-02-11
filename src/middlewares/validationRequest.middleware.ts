@@ -10,7 +10,12 @@ interface ValidationSchemas {
   cookies?: ZodTypeAny;
 }
 
-export const validationRequest = ({ body, query, params, cookies }: ValidationSchemas = {}) => {
+export const validationRequest = ({
+  body,
+  query,
+  params,
+  cookies,
+}: ValidationSchemas = {}) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       if (body) Object.assign(req.body, body.parse(req.body));

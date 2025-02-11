@@ -5,7 +5,11 @@ import { DiscordLoggerService } from '@/logger/discord.log';
 
 const logger = new DiscordLoggerService();
 
-export const pushLogToDiscord = (req: Request, res: Response, next: NextFunction) => {
+export const pushLogToDiscord = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const NODE_ENV: Env = (process.env.NODE_ENV as Env) || 'dev';
     if (NODE_ENV === 'dev') {
