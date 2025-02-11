@@ -1,29 +1,13 @@
-import { type Request, type Response } from 'express';
-import { type PaginateOptions, type Types } from 'mongoose';
-import { z } from 'zod';
+import { type Request } from 'express';
+import { type Types } from 'mongoose';
 
-import { BadRequestError, NotFoundError } from '@/core/error.response';
+import { NotFoundError } from '@/core/error.response';
 import { CreatedResponse, OkResponse } from '@/core/success.response';
 import foodModel, { type Food } from '@/models/food.model';
 
 class FoodService {
   async get(req: Request) {
-    const optionQuerySchema = z.object({
-      page: z.coerce.number().int().min(1).optional(),
-      limit: z.coerce.number().int().min(1).optional(),
-      order: z.enum(['asc', 'desc']).optional(),
-    });
-
-    const optionQuery = optionQuerySchema.safeParse(req.query);
-    if (optionQuery.error) throw new BadRequestError('Invalid query');
-
-    const options: PaginateOptions = {
-      page: optionQuery.data.page,
-      limit: optionQuery.data.limit,
-      sort: { createdAt: optionQuery.data.order || 'desc' },
-    };
-
-    const foods = await foodModel.paginate({}, options);
+    const foods = await foodModel.find();
     return new OkResponse('Successfully!', foods);
   }
 
