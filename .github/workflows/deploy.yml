@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: [self-hosted, ubuntu-lastest]
 
     steps:
       - name: Checkout
@@ -30,14 +30,14 @@ jobs:
       - name: Run CI
         run: pnpm run ci
 
-      - name: Deploy to EC2
-        run: |
-          pm2 stop all || true
+      # - name: Deploy to EC2
+      #   run: |
+      #     pm2 stop all || true
 
-          git pull origin main
+      #     git pull origin main
 
-          pnpm install
+      #     pnpm install
 
-          pnpm run build
+      #     pnpm run build
 
-          pm2 restart all
+      #     pm2 restart all
