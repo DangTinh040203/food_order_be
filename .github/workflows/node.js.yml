@@ -8,7 +8,7 @@ on:
 
 jobs:
   cache-and-install:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout
@@ -31,6 +31,9 @@ jobs:
 
       - name: Check lint
         run: pnpm run lint
+
+      - name: Run ci
+        run: pnpm ci
 
       - name: Check Build
         run: pnpm run build
