@@ -1,0 +1,19 @@
+/node_modules
+/.pnp
+.pnp.js
+
+/dist
+
+# misc
+.DS_Store
+*.pem
+
+npm-debug.log*
+pnpm-debug.log*
+pnpm-error.log*
+
+*.tsbuildinfo
+.env*
+logs
+docker-compose.override.yml
+mongodb_data
