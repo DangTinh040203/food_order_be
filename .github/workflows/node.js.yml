@@ -7,11 +7,12 @@ on:
     branches: ['main']
 
 jobs:
-  cache-and-install:
-    runs-on: self-hosted
+  lint:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install pnpm
@@ -29,12 +30,32 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Check lint
+      - name: Run lint check
         run: pnpm run lint
 
-      - name: Run ci
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: pnpm ci
+  deploy:
+    runs-on: self-hosted
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Check Build
+      - name: Pull latest code
+        run: git pull origin main
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
         run: pnpm run build
+
+      - name: Restart server
+        run: |
+          pm2 stop all || true  
+          pm2 start pnpm start
