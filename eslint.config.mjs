@@ -18,7 +18,7 @@ const eslintConfig = [
       'dist/**',
       'eslint.config.mjs',
       'mongodb_data',
-      'logs'
+      'logs',
     ],
   },
   ...compat.extends(
