@@ -4,4 +4,6 @@
 
 `pnpm run dev`
 
+## Format code
+
 `pnpm run lint --fix`

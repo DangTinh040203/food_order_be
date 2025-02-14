@@ -60,3 +60,6 @@ jobs:
 
       - name: Check Build
         run: pnpm run build
+
+      - name: Start pm2
+        run: pm2 restart food-order-be

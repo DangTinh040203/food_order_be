@@ -21,6 +21,7 @@ class Database {
             console.log(`[Database - ${NODE_ENV}] Connected to MongoDB`);
           })
           .catch((error) => {
+            console.log('🚀 ~ Database ~ connect ~ error:', error);
             console.error('[Error] Error connecting to MongoDB');
           });
         break;
