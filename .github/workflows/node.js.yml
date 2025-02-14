@@ -7,11 +7,12 @@ on:
     branches: ['main']
 
 jobs:
-  cache-and-install:
-    runs-on: ubuntu-latest
+  lint:
+    runs-on: ubuntu-latest # Sử dụng máy chủ GitHub mặc định
+    if: github.event_name == 'pull_request' # Chỉ chạy khi có PR vào main
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install pnpm
@@ -29,8 +30,27 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Check lint
+      - name: Run lint check
         run: pnpm run lint
 
-      - name: Check Build
+  deploy:
+    runs-on: self-hosted # Chạy trên runner tự host (EC2)
+    if: github.event_name == 'push' # Chỉ chạy khi có push vào main
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull latest code
+        run: git pull origin main # Kéo code mới nhất về EC2
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
         run: pnpm run build
+
+      - name: Restart server
+        run: |
+          pm2 stop all || true  # Dừng server nếu đang chạy
+          pm2 start npm -- run start  # Chạy lại server
