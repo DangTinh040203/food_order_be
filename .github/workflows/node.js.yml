@@ -34,11 +34,6 @@ jobs:
   cache-and-install:
     runs-on: self-hosted
     needs: lint
-
-    strategy:
-      matrix:
-        node-version: [22.x]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
