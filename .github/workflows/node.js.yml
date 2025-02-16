@@ -57,5 +57,12 @@ jobs:
       - name: Check Build
         run: pnpm run build
 
-      - name: Start pm2
-        run: pm2 restart food-order-be
+      - name: Check and Start PM2 Process
+        run: |
+          if pm2 list | grep -q food-order-be; then
+            echo "Restarting existing PM2 process..."
+            pm2 restart food-order-be
+          else
+            echo "Starting new PM2 process..."
+            pm2 start dist/src/server.js --name food-order-be
+          fi
