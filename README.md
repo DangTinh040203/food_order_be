@@ -1,4 +1,49 @@
-# Project Name
+# Food Order Backend
+
+## Getting Started
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- Node.js (Latest LTS)
+- MongoDB
+- Docker & Docker Compose
+
+### Installation
+
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/your-repo/project.git
+   cd project
+   ```
+
+2. Install dependencies:
+
+   ```sh
+   pnpm install
+   ```
+
+3. Set up environment variables:
+   - Copy `.env.example` to `.env`
+   - Fill in required fields
+
+### Running the Backend Locally
+
+```sh
+pnpm run dev
+```
+
+### Running with Docker
+
+```sh
+docker-compose up --build
+```
+
+## License
+
+This project is licensed under the MIT License.
 
 ## Overview
 
@@ -92,48 +137,3 @@ BE/
   2. **Backend** is deployed via **AWS EC2** with **Dockerized images** stored in **AWS ECR**.
   3. **Jenkins** triggers webhooks and rebuilds the backend container upon updates.
   4. **GitHub Actions** ensures version control and automated builds.
-
-## Getting Started
-
-### Prerequisites
-
-Ensure you have the following installed:
-
-- Node.js (Latest LTS)
-- MongoDB
-- Docker & Docker Compose
-
-### Installation
-
-1. Clone the repository:
-
-   ```sh
-   git clone https://github.com/your-repo/project.git
-   cd project
-   ```
-
-2. Install dependencies:
-
-   ```sh
-   pnpm install
-   ```
-
-3. Set up environment variables:
-   - Copy `.env.example` to `.env`
-   - Fill in required fields
-
-### Running the Backend Locally
-
-```sh
-pnpm run dev
-```
-
-### Running with Docker
-
-```sh
-docker-compose up --build
-```
-
-## License
-
-This project is licensed under the MIT License.
