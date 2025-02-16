@@ -7,7 +7,8 @@ on:
     branches: ['main']
 
 jobs:
-  lint:
+  LintCheck:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,9 +32,9 @@ jobs:
       - name: Run lint check
         run: pnpm run lint
 
-  cache-and-install:
+  Deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: self-hosted
-    needs: lint
     steps:
       - name: Checkout
         uses: actions/checkout@v4
