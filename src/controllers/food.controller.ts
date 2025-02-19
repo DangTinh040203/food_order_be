@@ -2,7 +2,10 @@ import { type Request, type Response } from 'express';
 
 import { type Food } from '@/models/food.model';
 import foodService from '@/services/food.service';
+import { UploadService } from '@/services/upload.service';
 import { convertObjectId } from '@/utils/convertObjectId';
+
+const uploadService = new UploadService();
 
 class FoodController {
   async get(req: Request, res: Response) {
@@ -23,6 +26,15 @@ class FoodController {
   async delete(req: Request, res: Response) {
     const id = convertObjectId(req.params.id);
     res.send(await foodService.delete(id));
+  }
+
+  async uploadFoodThumbnail(req: Request, res: Response) {
+    const thumbnail = req.file;
+    res.send(
+      await uploadService.uploadImageFromLocal(
+        thumbnail as Express.Multer.File,
+      ),
+    );
   }
 }
 

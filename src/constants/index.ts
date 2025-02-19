@@ -26,3 +26,11 @@ export enum FOOD_CATEGORY {
   FOOD = 'FOOD',
   DRINK = 'DRINK',
 }
+
+export enum FOOD_TYPE {
+  ALL = 'all',
+  COMBO = 'combo',
+  FOOD = 'food',
+  DRINK = 'drink',
+  DESSERT = 'dessert',
+}

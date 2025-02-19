@@ -1,5 +1,4 @@
-import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 
 import s3 from '@/configs/s3.config';
 import { InternalServerError } from '@/core/error.response';
@@ -18,7 +17,7 @@ export class UploadService {
       });
       await s3.send(uploadCommand);
 
-      return new CreatedResponse('Created image', {
+      return new CreatedResponse('Uploaded', {
         url: `${process.env.CLOUDFRONT_URL}/${imageName}`,
       });
     } catch (error) {

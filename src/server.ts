@@ -54,7 +54,7 @@ class Server {
   }
 
   private customMiddleware() {
-    this.app.use(pushLogToDiscord);
+    // this.app.use(pushLogToDiscord);
   }
 
   private configureRoutes() {

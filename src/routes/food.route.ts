@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { uploadMemory } from '@/configs/multer.config';
 import foodController from '@/controllers/food.controller';
 import { asyncHandler } from '@/middlewares/asyncHandler.middleware';
 import { validationRequest } from '@/middlewares/validationRequest.middleware';
@@ -25,6 +26,12 @@ router.post(
   '/insert',
   validationRequest(FoodValidation.insertFoodSchema()),
   asyncHandler(foodController.insert),
+);
+
+router.post(
+  '/upload-thumbnail',
+  uploadMemory.single('thumbnail'),
+  asyncHandler(foodController.uploadFoodThumbnail),
 );
 
 export default router;
