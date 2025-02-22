@@ -1,0 +1,507 @@
+openapi: 3.0.3
+info:
+  title: Food & Table Management API - OpenAPI 3.0
+  description: |-
+    This API is designed for managing food items and tables in a restaurant. It provides the following functionalities:
+    - Retrieve a list of food items and tables
+    - Add, update, and delete food items and tables
+    - Upload food thumbnail images
+
+    The API follows the OpenAPI 3.0 standard, making it easy to integrate and extend. Requests should be sent in JSON format.
+
+    Some useful resources:
+    - [OpenAPI Specification](https://swagger.io/specification/)
+    - [Sample API Repository](https://github.com/swagger-api/swagger-petstore)
+
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: food
+    description: Operations related to food items
+  - name: table
+    description: Operations related to tables
+paths:
+  /food:
+    get:
+      summary: Get all food items
+      description: Retrieves a list of all food items available in the system.
+      responses:
+        '200':
+          description: Successfully retrieved food items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Food'
+  /food/insert:
+    post:
+      summary: Insert a new food item
+      description: Adds a new food item to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertFood'
+      responses:
+        '201':
+          description: Food created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Food created successfully'
+                  data:
+                    $ref: '#/components/schemas/Food'
+        '400':
+          description: Invalid request or validation error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Invalid request data'
+  /food/delete/{id}:
+    delete:
+      summary: Delete a food item
+      description: Deletes a specific food item based on the provided ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the food item (MongoDB ObjectId).
+          schema:
+            type: string
+            example: '65d1c3eabedc3e001e234567' # Dữ liệu mẫu
+      responses:
+        '200':
+          description: Food item deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Food item deleted successfully'
+        '404':
+          description: Food item not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Food not found'
+        '400':
+          description: Invalid ObjectId format.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Invalid ObjectId format'
+  /food/update/{id}:
+    patch:
+      summary: Update food details
+      description: Updates an existing food item by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the food item (MongoDB ObjectId).
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFood'
+      responses:
+        '200':
+          description: Food item updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Food updated successfully
+                  data:
+                    $ref: '#/components/schemas/Food'
+        '404':
+          description: Food item not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Food not found
+  /food/upload-thumbnail:
+    post:
+      summary: Upload a food thumbnail to S3
+      description: Uploads an image file as a thumbnail for a food item and returns the file URL.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                thumbnail:
+                  type: string
+                  format: binary
+                  description: The image file to be uploaded as a thumbnail.
+      responses:
+        '200':
+          description: Thumbnail uploaded successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Thumbnail uploaded successfully'
+                  data:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: URL of the uploaded thumbnail.
+                        example: 'https://cdn.example.com/thumbnails/1708601923_image.jpg'
+        '500':
+          description: Internal server error (e.g., AWS S3 failure).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Something went wrong!'
+  /table:
+    get:
+      summary: Get all tables
+      description: Retrieves a list of all tables in the system.
+      responses:
+        '200':
+          description: Successfully retrieved tables.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Tables found successfully'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Table'
+  /table/insert:
+    post:
+      summary: Insert a new table
+      description: Adds a new table to the system and emits a WebSocket event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertTable'
+      responses:
+        '200':
+          description: Table created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Tables created successfully'
+                  data:
+                    $ref: '#/components/schemas/Table'
+  /table/update/{id}:
+    patch:
+      summary: Update a table
+      description: Updates an existing table's details.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the table.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTable'
+      responses:
+        '200':
+          description: Table updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Table updated successfully'
+                  data:
+                    $ref: '#/components/schemas/Table'
+        '404':
+          description: Table not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Table not found'
+  /table/delete/{id}:
+    delete:
+      summary: Delete a table
+      description: Deletes a specific table based on the provided ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the table.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Table deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Table deleted successfully'
+        '404':
+          description: Table not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Table not found'
+
+components:
+  schemas:
+    Food:
+      type: object
+      required:
+        - name
+        - category
+        - price
+        - thumbnail
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the food item (MongoDB ObjectId).
+          example: '65d1c3eabedc3e001e234567'
+        name:
+          type: string
+          description: Name of the food item.
+          example: 'Cheeseburger'
+        category:
+          type: string
+          enum: ['DRINK', 'FOOD']
+          description: Category of the food item.
+          example: 'FOOD'
+        description:
+          type: string
+          description: A brief description of the food item.
+          example: 'A delicious cheeseburger with fresh ingredients.'
+        price:
+          type: number
+          format: float
+          description: Price of the food item.
+          example: 5.99
+        isAvailable:
+          type: boolean
+          description: Availability status of the food item.
+          example: true
+        thumbnail:
+          type: string
+          description: URL or base64 string of the food's thumbnail image.
+          example: 'https://example.com/images/cheeseburger.jpg'
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the food item was created.
+          example: '2024-03-01T12:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the food item was last updated.
+          example: '2024-03-05T15:30:00Z'
+    UpdateFood:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The updated name of the food item (optional).
+          example: 'Veggie Burger'
+        category:
+          type: string
+          enum: ['DRINK', 'FOOD']
+          description: The updated category (optional).
+          example: 'FOOD'
+        description:
+          type: string
+          description: Updated description of the food item (optional).
+          example: 'A delicious veggie burger with fresh lettuce and tomato.'
+        price:
+          type: number
+          format: float
+          description: Updated price (optional, must be positive).
+          example: 6.99
+        thumbnail:
+          type: string
+          description: Updated thumbnail URL or base64 string (optional).
+          example: 'https://example.com/images/veggie-burger.jpg'
+        isAvailable:
+          type: boolean
+          description: Updated availability status (optional).
+          example: true
+    InsertFood:
+      type: object
+      required:
+        - name
+        - category
+        - price
+        - thumbnail
+      properties:
+        name:
+          type: string
+          description: The name of the food item.
+          example: 'Cheeseburger'
+        category:
+          type: string
+          enum: ['DRINK', 'FOOD']
+          description: The category of the food item.
+          example: 'FOOD'
+        description:
+          type: string
+          description: A brief description of the food item (optional).
+          example: 'A delicious cheeseburger with fresh ingredients.'
+        price:
+          type: number
+          format: float
+          description: The price of the food item (must be positive).
+          example: 5.99
+        thumbnail:
+          type: string
+          description: URL or base64 string of the food's thumbnail image.
+          example: 'https://example.com/images/cheeseburger.jpg'
+        isAvailable:
+          type: boolean
+          description: Availability status of the food item (optional).
+          example: true
+    Table:
+      type: object
+      required:
+        - numericalOrder
+        - maxNumOfPeople
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the table (MongoDB ObjectId).
+        numericalOrder:
+          type: number
+          description: The table number.
+          example: 1
+        isAvailable:
+          type: boolean
+          description: Whether the table is available.
+          example: true
+        currentNumOfPeople:
+          type: number
+          description: Current number of people seated at the table.
+          example: 2
+        maxNumOfPeople:
+          type: number
+          description: Maximum capacity of the table.
+          example: 4
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the table was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the table was last updated.
+    InsertTable:
+      type: object
+      required:
+        - numericalOrder
+        - maxNumOfPeople
+      properties:
+        numericalOrder:
+          type: number
+          description: The table number.
+          example: 5
+        maxNumOfPeople:
+          type: number
+          description: The maximum number of people the table can accommodate.
+          example: 6
+        isAvailable:
+          type: boolean
+          description: 'Whether the table is available (default: true).'
+          example: true
+        currentNumOfPeople:
+          type: number
+          description: 'The current number of people at the table (default: 0)'
+          example: 3
+    UpdateTable:
+      type: object
+      properties:
+        numericalOrder:
+          type: number
+          description: The updated table number.
+          example: 3
+        maxNumOfPeople:
+          type: number
+          description: The updated maximum number of people.
+          example: 5
+        isAvailable:
+          type: boolean
+          description: Updated availability status.
+          example: false
+        currentNumOfPeople:
+          type: number
+          description: Updated current number of people at the table.
+          example: 2
