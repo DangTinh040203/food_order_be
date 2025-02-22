@@ -70,7 +70,7 @@ class Server {
     this.app.use(
       '/api-docs',
       swaggerUi.serve,
-      swaggerUi.setup(swaggerDocument),
+      swaggerUi.setup(swaggerDocument as object),
     );
   }
 
