@@ -5,6 +5,7 @@ import billModel from '@/models/bill.model';
 import { type Food } from '@/models/food.model';
 import orderModel, { type Order } from '@/models/order.model';
 import rejectedOrderModel from '@/models/rejected-order.model';
+import tableModel from '@/models/table.model';
 
 class OrderService {
   async insert(
@@ -15,13 +16,20 @@ class OrderService {
     }>,
   ) {
     try {
-      const newOrder = await orderModel.create({
-        tableId: payload[0].tableId,
-        items: payload.map((item) => ({
-          foodId: item.food,
-          quantity: item.quantity,
-        })),
-      });
+      const [newOrder] = await Promise.all([
+        orderModel.create({
+          tableId: payload[0].tableId,
+          items: payload.map((item) => ({
+            foodId: item.food,
+            quantity: item.quantity,
+          })),
+        }),
+        tableModel.findOneAndUpdate(
+          { _id: payload[0].tableId },
+          { isAvailable: false },
+          { new: true },
+        ),
+      ]);
 
       const billPrice = payload.reduce(
         (acc, item) => acc + item.food.price * item.quantity,
@@ -44,17 +52,13 @@ class OrderService {
 
   async rejectOrder(reason: string, orderId: string) {
     try {
-      const updatedOrder = await orderModel.findOneAndUpdate(
-        {},
-        { status: ORDER_STATUS.REJECTED },
-      );
-
-      if (updatedOrder) {
-        await rejectedOrderModel.create({
+      await Promise.all([
+        orderModel.findOneAndUpdate({}, { status: ORDER_STATUS.REJECTED }),
+        rejectedOrderModel.create({
           orderId,
           reason,
-        });
-      }
+        }),
+      ]);
 
       return new OkResponse('Rejected Order');
     } catch (error) {
