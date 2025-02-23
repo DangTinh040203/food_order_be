@@ -28,9 +28,13 @@ export enum FOOD_CATEGORY {
 }
 
 export enum FOOD_TYPE {
-  ALL = 'all',
-  COMBO = 'combo',
   FOOD = 'food',
   DRINK = 'drink',
-  DESSERT = 'dessert',
+}
+
+export enum ORDER_STATUS {
+  ORDERED = 'ORDERED',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+  DELIVERED = 'DELIVERED',
 }

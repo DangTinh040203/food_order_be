@@ -1,6 +1,7 @@
 import express from 'express';
 
 import foodRoute from '@/routes/food.route';
+import orderRoute from '@/routes/order.route';
 import swaggerRouter from '@/routes/swagger.router';
 import tableRoute from '@/routes/table.route';
 import testRoute from '@/routes/test.route';
@@ -8,6 +9,7 @@ import testRoute from '@/routes/test.route';
 const router = express.Router();
 
 router.use('/food', foodRoute);
+router.use('/order', orderRoute);
 router.use('/table', tableRoute);
 router.use('/test', testRoute);
 router.use('/', swaggerRouter);

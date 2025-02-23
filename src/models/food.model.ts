@@ -46,6 +46,8 @@ const foodSchema = new mongoose.Schema(
 
 foodSchema.plugin(mongoosePaginate);
 
-export type Food = InferSchemaType<typeof foodSchema>;
+export type Food = InferSchemaType<typeof foodSchema> & {
+  _id: mongoose.Types.ObjectId;
+};
 const foodModel = model<Food, PaginateModel<Food>>(DOCUMENT_NAME, foodSchema);
 export default foodModel;
