@@ -19,4 +19,10 @@ router.post(
   asyncHandler(orderController.rejectOrder),
 );
 
+router.post(
+  '/update-status',
+  validationRequest(OrderValidation.acceptOrderSchema()),
+  asyncHandler(orderController.updateStatus),
+);
+
 export default router;

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { ORDER_STATUS } from '@/constants';
 import { isValidObjectId } from '@/utils/isValidObjectId';
 
 export class OrderValidation {
@@ -36,6 +37,19 @@ export class OrderValidation {
         reason: z.string().nonempty({ message: 'Reject message is required' }),
         orderId: z.string().nonempty().refine(isValidObjectId, {
           message: 'Invalid ObjectId format',
+        }),
+      }),
+    };
+  }
+
+  static acceptOrderSchema() {
+    return {
+      body: z.object({
+        orderId: z.string().nonempty().refine(isValidObjectId, {
+          message: 'Invalid ObjectId format',
+        }),
+        status: z.nativeEnum(ORDER_STATUS, {
+          message: 'Status must be either ACCEPTED, REJECTED, or DELIVERED',
         }),
       }),
     };

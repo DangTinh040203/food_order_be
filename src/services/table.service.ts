@@ -15,10 +15,8 @@ class TableService {
 
   async insert(payload: Omit<Table, 'id'>) {
     const tables = await tableModel.create(payload);
-
     const io = SocketInstance.getIO();
     io.emit(SOCKET_ACTIONS.INSERT_TABLE, tables);
-
     return new CreatedResponse('Tables created successfully', tables);
   }
 

@@ -65,6 +65,11 @@ class OrderService {
       throw new InternalServerError('Something went wrong!');
     }
   }
+
+  async updateStatus(orderId: string, status: ORDER_STATUS) {
+    await orderModel.findOneAndUpdate({ _id: orderId }, { status });
+    return new OkResponse('Updated');
+  }
 }
 
 const orderService = new OrderService();
