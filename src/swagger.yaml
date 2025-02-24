@@ -33,17 +33,64 @@ tags:
 paths:
   /food:
     get:
-      summary: Get all food items
-      description: Retrieves a list of all food items available in the system.
+      summary: Get paginated food items
+      description: Retrieves a paginated list of food items based on page and limit.
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: The page number (default is 1).
+          schema:
+            type: integer
+            example: 1
+        - name: limit
+          in: query
+          required: false
+          description: The number of food items per page (default is 10).
+          schema:
+            type: integer
+            example: 10
       responses:
         '200':
-          description: Successfully retrieved food items.
+          description: Successfully retrieved paginated food items.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Food'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Successfully!"
+                  status:
+                    type: integer
+                    example: 200
+                  totalItems:
+                    type: integer
+                    example: 100
+                  totalPages:
+                    type: integer
+                    example: 10
+                  currentPage:
+                    type: integer
+                    example: 1
+                  hasNextPage:
+                    type: boolean
+                    example: true
+                  hasPrevPage:
+                    type: boolean
+                    example: false
+                  prevPage:
+                    type: integer
+                    nullable: true
+                    example: null
+                  nextPage:
+                    type: integer
+                    nullable: true
+                    example: 2
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Food'
   /food/insert:
     post:
       summary: Insert a new food item
@@ -205,11 +252,26 @@ paths:
                     example: 'Something went wrong!'
   /table:
     get:
-      summary: Get all tables
-      description: Retrieves a list of all tables in the system.
+      summary: Get paginated tables
+      description: Retrieves a paginated list of tables based on page and limit.
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: The page number (default is 1).
+          schema:
+            type: integer
+            example: 1
+        - name: limit
+          in: query
+          required: false
+          description: The number of tables per page (default is 10).
+          schema:
+            type: integer
+            example: 10
       responses:
         '200':
-          description: Successfully retrieved tables.
+          description: Successfully retrieved paginated tables.
           content:
             application/json:
               schema:
@@ -217,11 +279,38 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Tables found successfully'
+                    example: "Successfully!"
+                  status:
+                    type: integer
+                    example: 200
+                  totalItems:
+                    type: integer
+                    example: 50
+                  totalPages:
+                    type: integer
+                    example: 5
+                  currentPage:
+                    type: integer
+                    example: 1
+                  hasNextPage:
+                    type: boolean
+                    example: true
+                  hasPrevPage:
+                    type: boolean
+                    example: false
+                  prevPage:
+                    type: integer
+                    nullable: true
+                    example: null
+                  nextPage:
+                    type: integer
+                    nullable: true
+                    example: 2
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Table'
+
   /table/insert:
     post:
       summary: Insert a new table

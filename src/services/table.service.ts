@@ -9,7 +9,17 @@ import SocketInstance from '@/services/socket.instance';
 
 class TableService {
   async get(req: Request) {
-    const tables = await tableModel.find();
+    let { page = 1, limit = 10 } = req.query;
+    page = parseInt(page as string);
+    limit = parseInt(limit as string);
+
+    const options = {
+      page,
+      limit,
+      sort: { createAt: -1 },
+    };
+
+    const tables = await tableModel.paginate({}, options);
     return new OkResponse('Tables found successfully', tables);
   }
 
