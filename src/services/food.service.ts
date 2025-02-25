@@ -7,7 +7,19 @@ import foodModel, { type Food } from '@/models/food.model';
 
 class FoodService {
   async get(req: Request) {
-    const foods = await foodModel.find();
+    let { page = 1, limit = 10 } = req.query;
+
+    page = parseInt(page as string);
+    limit = parseInt(limit as string);
+
+    const options = {
+      page,
+      limit,
+      sort: { createdAt: -1 },
+    };
+
+    const foods = await foodModel.paginate({}, options);
+
     return new OkResponse('Successfully!', foods);
   }
 
