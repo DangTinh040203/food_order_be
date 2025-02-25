@@ -310,7 +310,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Table'
-
   /table/insert:
     post:
       summary: Insert a new table
