@@ -25,4 +25,13 @@ router.post(
   asyncHandler(orderController.updateStatus),
 );
 
+router.patch(
+  '/update',
+  validationRequest(OrderValidation.insertOrderSchema()),
+  asyncHandler(orderController.updateOrder),
+);
+
+router.get('/', asyncHandler(orderController.get));
+
+router.delete('/delete', asyncHandler(orderController.delete));
 export default router;

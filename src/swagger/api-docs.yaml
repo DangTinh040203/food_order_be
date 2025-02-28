@@ -60,7 +60,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Successfully!"
+                    example: 'Successfully!'
                   status:
                     type: integer
                     example: 200
@@ -279,7 +279,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Successfully!"
+                    example: 'Successfully!'
                   status:
                     type: integer
                     example: 200

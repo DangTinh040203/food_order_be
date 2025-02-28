@@ -27,6 +27,12 @@ export class OrderValidation {
             }),
           )
           .nonempty({ message: 'Items array cannot be empty' }),
+        voucher: z
+          .object({
+            code: z.string().optional().or(z.literal('')),
+          })
+          .optional()
+          .transform((val) => val ?? null),
       }),
     };
   }
@@ -51,6 +57,39 @@ export class OrderValidation {
         status: z.nativeEnum(ORDER_STATUS, {
           message: 'Status must be either ACCEPTED, REJECTED, or DELIVERED',
         }),
+      }),
+    };
+  }
+
+  static updateOrderSchema() {
+    return {
+      body: z.object({
+        billId: z.string().nonempty().refine(isValidObjectId, {
+          message: 'Invalid ObjectId format',
+        }),
+        orderId: z.string().nonempty().refine(isValidObjectId, {
+          message: 'Invalid ObjectId format',
+        }),
+        items: z
+          .array(
+            z.object({
+              food: z.object({
+                _id: z.string().nonempty().refine(isValidObjectId, {
+                  message: 'Invalid ObjectId format',
+                }),
+                price: z.number().positive({
+                  message: 'Price must be a positive number',
+                }),
+              }),
+              tableId: z.string().nonempty().refine(isValidObjectId, {
+                message: 'Invalid ObjectId format',
+              }),
+              quantity: z.number().int().positive({
+                message: 'Quantity must be a positive integer',
+              }),
+            }),
+          )
+          .nonempty({ message: 'Items array cannot be empty' }),
       }),
     };
   }

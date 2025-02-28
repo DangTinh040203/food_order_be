@@ -24,6 +24,10 @@ const orderSchema = new mongoose.Schema(
           ref: 'Food',
           required: true,
         },
+        price: {
+          type: Number,
+          required: true,
+        },
         quantity: {
           type: Number,
           required: true,
@@ -34,7 +38,6 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: [
         ORDER_STATUS.ORDERED,
-        ORDER_STATUS.PENDING,
         ORDER_STATUS.ACCEPTED,
         ORDER_STATUS.REJECTED,
         ORDER_STATUS.DELIVERED,
@@ -53,8 +56,10 @@ orderSchema.plugin(mongoosePaginate);
 export type Order = InferSchemaType<typeof orderSchema> & {
   _id: mongoose.Types.ObjectId;
 };
+
 const orderModel = model<Order, PaginateModel<Order>>(
   DOCUMENT_NAME,
   orderSchema,
 );
+
 export default orderModel;

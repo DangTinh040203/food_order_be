@@ -9,7 +9,7 @@ import SocketInstance from '@/services/socket.instance';
 
 class TableService {
   async get(req: Request) {
-    let { page = 1, limit = 10 } = req.query;
+    let { page = 1, limit = 20 } = req.query;
     page = parseInt(page as string);
     limit = parseInt(limit as string);
 
