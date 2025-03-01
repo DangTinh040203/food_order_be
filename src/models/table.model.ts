@@ -35,7 +35,9 @@ const tableSchema = new mongoose.Schema(
 
 tableSchema.plugin(mongoosePaginate);
 
-export type Table = InferSchemaType<typeof tableSchema>;
+export type Table = InferSchemaType<typeof tableSchema> & {
+  _id: mongoose.Types.ObjectId;
+};
 const tableModel = model<Table, PaginateModel<Table>>(
   DOCUMENT_NAME,
   tableSchema,

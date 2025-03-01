@@ -23,18 +23,18 @@ class FoodService {
     return new OkResponse('Successfully!', foods);
   }
 
-  async insert(payload: Omit<Food, 'id'>) {
+  async insertFood(payload: Omit<Food, 'id'>) {
     const food = await foodModel.create(payload);
     return new CreatedResponse('Food created successfully', food);
   }
 
-  async delete(id: Types.ObjectId) {
+  async deleteFood(id: Types.ObjectId) {
     const food = await foodModel.findByIdAndDelete(id);
     if (!food) throw new NotFoundError('Food not found');
     return new OkResponse('Food deleted successfully', food);
   }
 
-  async update(foodId: Types.ObjectId, payload: Partial<Food>) {
+  async updateFood(foodId: Types.ObjectId, payload: Partial<Food>) {
     const food = await foodModel.findByIdAndUpdate(foodId, payload, {
       new: true,
     });

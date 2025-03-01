@@ -4,7 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 import YAML from 'yaml';
 
 const router = express.Router();
-const file = fs.readFileSync('./src/swagger.yaml', 'utf8');
+const file = fs.readFileSync('./src/swagger/api-docs.yaml', 'utf8');
 const swaggerDocument = YAML.parse(file);
 
 router.use(

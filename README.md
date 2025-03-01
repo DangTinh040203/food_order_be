@@ -38,12 +38,8 @@ pnpm run dev
 ### Running with Docker
 
 ```sh
-docker-compose up --build
+docker compose --profile dev up
 ```
-
-## License
-
-This project is licensed under the MIT License.
 
 ## Overview
 

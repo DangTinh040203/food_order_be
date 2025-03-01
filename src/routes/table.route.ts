@@ -10,21 +10,21 @@ const router = express.Router();
 router.get('/', asyncHandler(tableController.get));
 
 router.patch(
-  '/update/:id',
+  '/:id',
   validationRequest(TableValidation.updateTableSchema()),
-  asyncHandler(tableController.update),
+  asyncHandler(tableController.updateTable),
 );
 
 router.delete(
-  '/delete/:id',
+  '/:id',
   validationRequest(TableValidation.deleteTableSchema()),
-  asyncHandler(tableController.delete),
+  asyncHandler(tableController.deleteTable),
 );
 
 router.post(
-  '/insert',
+  '/',
   validationRequest(TableValidation.insertTableSchema()),
-  asyncHandler(tableController.insert),
+  asyncHandler(tableController.insertTable),
 );
 
 export default router;

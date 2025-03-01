@@ -9,20 +9,20 @@ class TableController {
     res.send(await tableService.get(req));
   }
 
-  async insert(req: Request, res: Response) {
+  async insertTable(req: Request, res: Response) {
     const payload: Omit<Table, 'id'> = req.body;
-    res.send(await tableService.insert(payload));
+    res.send(await tableService.insertTable(payload));
   }
 
-  async update(req: Request, res: Response) {
+  async updateTable(req: Request, res: Response) {
     const id = convertObjectId(req.params.id);
     const payload: Partial<Table> = req.body;
-    res.send(await tableService.update(id, payload));
+    res.send(await tableService.updateTable(id, payload));
   }
 
-  async delete(req: Request, res: Response) {
+  async deleteTable(req: Request, res: Response) {
     const id = convertObjectId(req.params.id);
-    res.send(await tableService.delete(id));
+    res.send(await tableService.deleteTable(id));
   }
 }
 

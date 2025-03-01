@@ -11,25 +11,25 @@ const router = express.Router();
 router.get('/', asyncHandler(foodController.get));
 
 router.patch(
-  '/update/:id',
+  '/:id',
   validationRequest(FoodValidation.updateFoodSchema()),
-  asyncHandler(foodController.update),
+  asyncHandler(foodController.updateFood),
 );
 
 router.delete(
-  '/delete/:id',
+  '/:id',
   validationRequest(FoodValidation.deleteFoodSchema()),
-  asyncHandler(foodController.delete),
+  asyncHandler(foodController.deleteFood),
 );
 
 router.post(
-  '/insert',
+  '/',
   validationRequest(FoodValidation.insertFoodSchema()),
-  asyncHandler(foodController.insert),
+  asyncHandler(foodController.insertFood),
 );
 
 router.post(
-  '/upload-thumbnail',
+  '/thumbnail',
   uploadMemory.single('thumbnail'),
   asyncHandler(foodController.uploadFoodThumbnail),
 );

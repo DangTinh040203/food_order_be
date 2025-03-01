@@ -1,7 +1,6 @@
-import { Types } from 'mongoose';
 import { z } from 'zod';
 
-const isValidObjectId = (id: string) => Types.ObjectId.isValid(id);
+import { isValidObjectId } from '@/utils/isValidObjectId';
 
 export class TableValidation {
   static insertTableSchema() {

@@ -19,14 +19,11 @@ export class OkResponse<T> extends SuccessResponse<T> {
 }
 
 export class CreatedResponse<T> extends SuccessResponse<T> {
-  constructor(message: string = getReasonPhrase(StatusCodes.CREATED), data?: T) {
+  constructor(
+    message: string = getReasonPhrase(StatusCodes.CREATED),
+    data?: T,
+  ) {
     super(message, StatusCodes.CREATED, data);
-  }
-}
-
-export class AcceptedResponse<T> extends SuccessResponse<T> {
-  constructor(message: string = getReasonPhrase(StatusCodes.ACCEPTED), data?: T) {
-    super(message, StatusCodes.ACCEPTED, data);
   }
 }
 
