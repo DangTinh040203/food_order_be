@@ -147,6 +147,10 @@ class OrderService {
         { new: true },
       );
 
+      if (newBill == null || newOrder == null) {
+        throw new BadRequestError('Order not found');
+      }
+
       return new OkResponse('Order updated', { newBill, newOrder });
     } catch (error) {
       throw new InternalServerError('Something went wrong');
