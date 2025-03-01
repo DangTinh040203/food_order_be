@@ -6,7 +6,7 @@ class BillService {
     const bills = await billModel.find();
     return new OkResponse('Bills found', bills);
   }
-  async delete() {
+  async deleteAll() {
     await billModel.deleteMany();
     return new OkResponse('All bills deleted');
   }

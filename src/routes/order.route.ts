@@ -8,30 +8,31 @@ import { OrderValidation } from '@/validations/order.validation';
 const router = express.Router();
 
 router.post(
-  '/insert',
+  '/',
   validationRequest(OrderValidation.insertOrderSchema()),
-  asyncHandler(orderController.insert),
+  asyncHandler(orderController.insertOrder),
 );
 
 router.post(
-  '/reject',
+  '/:orderId/reject',
   validationRequest(OrderValidation.rejectOrderSchema()),
   asyncHandler(orderController.rejectOrder),
 );
 
 router.post(
-  '/update-status',
+  '/:orderId/status',
   validationRequest(OrderValidation.acceptOrderSchema()),
   asyncHandler(orderController.updateStatus),
 );
 
 router.patch(
-  '/update',
-  validationRequest(OrderValidation.insertOrderSchema()),
+  '/bill/:billId/order/:orderId',
+  validationRequest(OrderValidation.updateOrderSchema()),
   asyncHandler(orderController.updateOrder),
 );
 
 router.get('/', asyncHandler(orderController.get));
 
-router.delete('/delete', asyncHandler(orderController.delete));
+router.delete('/', asyncHandler(orderController.delete));
+
 export default router;

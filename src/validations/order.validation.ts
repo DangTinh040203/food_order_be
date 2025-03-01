@@ -63,34 +63,26 @@ export class OrderValidation {
 
   static updateOrderSchema() {
     return {
-      body: z.object({
-        billId: z.string().nonempty().refine(isValidObjectId, {
-          message: 'Invalid ObjectId format',
-        }),
-        orderId: z.string().nonempty().refine(isValidObjectId, {
-          message: 'Invalid ObjectId format',
-        }),
-        items: z
-          .array(
-            z.object({
-              food: z.object({
-                _id: z.string().nonempty().refine(isValidObjectId, {
-                  message: 'Invalid ObjectId format',
-                }),
-                price: z.number().positive({
-                  message: 'Price must be a positive number',
-                }),
-              }),
-              tableId: z.string().nonempty().refine(isValidObjectId, {
+      body: z
+        .array(
+          z.object({
+            food: z.object({
+              _id: z.string().nonempty().refine(isValidObjectId, {
                 message: 'Invalid ObjectId format',
               }),
-              quantity: z.number().int().positive({
-                message: 'Quantity must be a positive integer',
+              price: z.number().positive({
+                message: 'Price must be a positive number',
               }),
             }),
-          )
-          .nonempty({ message: 'Items array cannot be empty' }),
-      }),
+            quantity: z.number().int().positive({
+              message: 'Quantity must be a positive integer',
+            }),
+            tableId: z.string().nonempty().refine(isValidObjectId, {
+              message: 'Invalid ObjectId format',
+            }),
+          }),
+        )
+        .nonempty({ message: 'Array cannot be empty' }),
     };
   }
 }

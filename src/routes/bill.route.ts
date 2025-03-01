@@ -6,6 +6,6 @@ import { asyncHandler } from '@/middlewares/asyncHandler.middleware';
 const router = express.Router();
 
 router.get('/', asyncHandler(billController.get));
-router.delete('/delete', asyncHandler(billController.delete)); //delete All
+router.delete('/', asyncHandler(billController.deleteAll));
 
 export default router;

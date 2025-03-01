@@ -4,6 +4,23 @@ import { type ORDER_STATUS } from '@/constants';
 import { type Food } from '@/models/food.model';
 import orderService from '@/services/order.service';
 
+interface OrderInsertRequest {
+  items: Array<{
+    food: Food;
+    tableId: string;
+    quantity: number;
+  }>;
+  voucher: {
+    code: string;
+  };
+}
+
+interface OrderUpdateRequest {
+  food: Food;
+  quantity: number;
+  tableId: string;
+}
+
 class OrderController {
   async get(req: Request, res: Response) {
     res.send(await orderService.get());
@@ -11,51 +28,27 @@ class OrderController {
   async delete(req: Request, res: Response) {
     res.send(await orderService.delete());
   }
-  async insert(req: Request, res: Response) {
-    const {
-      items,
-      voucher,
-    }: {
-      items: Array<{
-        food: Food;
-        tableId: string;
-        quantity: number;
-      }>;
-      voucher: {
-        code: string;
-      };
-    } = req.body;
-    res.send(await orderService.insert([items, voucher]));
+  async insertOrder(req: Request, res: Response) {
+    const { items, voucher }: OrderInsertRequest = req.body;
+    res.send(await orderService.insertOrder([items, voucher]));
   }
 
   async rejectOrder(req: Request, res: Response) {
-    const { reason, orderId }: { reason: string; orderId: string } = req.body;
+    const orderId = req.params.orderId;
+    const { reason }: { reason: string } = req.body;
     res.send(await orderService.rejectOrder(reason, orderId));
   }
 
   async updateStatus(req: Request, res: Response) {
-    const { orderId, status }: { orderId: string; status: ORDER_STATUS } =
-      req.body;
+    const orderId = req.params.orderId;
+    const { status }: { status: ORDER_STATUS } = req.body;
     res.send(await orderService.updateStatus(orderId, status));
   }
 
   async updateOrder(req: Request, res: Response) {
-    //orderId, items, billId
-    const {
-      billId,
-      orderId,
-      items,
-    }: {
-      items: Array<{
-        food: Food;
-        tableId: string;
-        quantity: number;
-      }>;
-      billId: string;
-      orderId: string;
-    } = req.body;
-
-    res.send(await orderService.updateOrder([billId, orderId, items]));
+    const { billId, orderId } = req.params;
+    const items: Array<OrderUpdateRequest> = req.body;
+    res.send(await orderService.updateOrder(billId, orderId, items));
   }
 }
 

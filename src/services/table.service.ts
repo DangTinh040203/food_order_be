@@ -23,20 +23,20 @@ class TableService {
     return new OkResponse('Tables found successfully', tables);
   }
 
-  async insert(payload: Omit<Table, 'id'>) {
+  async insertTable(payload: Omit<Table, 'id'>) {
     const tables = await tableModel.create(payload);
     const io = SocketInstance.getIO();
     io.emit(SOCKET_ACTIONS.INSERT_TABLE, tables);
     return new CreatedResponse('Tables created successfully', tables);
   }
 
-  async delete(id: Types.ObjectId) {
+  async deleteTable(id: Types.ObjectId) {
     const tables = await tableModel.findByIdAndDelete(id);
     if (!tables) throw new NotFoundError('Tables not found');
     return new OkResponse('tables deleted successfully', tables);
   }
 
-  async update(foodId: Types.ObjectId, payload: Partial<Table>) {
+  async updateTable(foodId: Types.ObjectId, payload: Partial<Table>) {
     const table = await tableModel.findByIdAndUpdate(foodId, payload, {
       new: true,
     });

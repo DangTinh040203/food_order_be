@@ -27,15 +27,6 @@ export class CreatedResponse<T> extends SuccessResponse<T> {
   }
 }
 
-export class AcceptedResponse<T> extends SuccessResponse<T> {
-  constructor(
-    message: string = getReasonPhrase(StatusCodes.ACCEPTED),
-    data?: T,
-  ) {
-    super(message, StatusCodes.ACCEPTED, data);
-  }
-}
-
 export class NoContentResponse<T> extends SuccessResponse<T> {
   constructor(message: string = getReasonPhrase(StatusCodes.NO_CONTENT)) {
     super(message, StatusCodes.NO_CONTENT);

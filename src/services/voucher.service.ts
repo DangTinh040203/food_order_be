@@ -2,11 +2,11 @@ import { CreatedResponse, OkResponse } from '@/core/success.response';
 import voucherModel, { type Voucher } from '@/models/voucher.model';
 
 class VoucherService {
-  async insert(payload: Omit<Voucher, 'id'>) {
+  async insertVoucher(payload: Omit<Voucher, 'id'>) {
     const voucher = await voucherModel.insertMany(payload);
     return new CreatedResponse('Voucher created successfully', voucher);
   }
-  async get() {
+  async getVouchers() {
     const vouchers = await voucherModel.find();
     return new OkResponse('Get voucher successfully!', vouchers);
   }

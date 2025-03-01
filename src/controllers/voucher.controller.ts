@@ -4,12 +4,12 @@ import { type Voucher } from '@/models/voucher.model';
 import voucherService from '@/services/voucher.service';
 
 class VoucherController {
-  async insert(req: Request, res: Response) {
+  async insertVoucher(req: Request, res: Response) {
     const payload: Omit<Voucher, 'id'> = req.body;
-    res.send(await voucherService.insert(payload));
+    res.send(await voucherService.insertVoucher(payload));
   }
-  async get(req: Request, res: Response) {
-    res.send(await voucherService.get());
+  async getVouchers(req: Request, res: Response) {
+    res.send(await voucherService.getVouchers());
   }
 }
 

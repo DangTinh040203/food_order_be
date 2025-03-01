@@ -6,8 +6,8 @@ class BillController {
   async get(req: Request, res: Response) {
     res.send(await billService.get());
   }
-  async delete(req: Request, res: Response) {
-    res.send(await billService.delete());
+  async deleteAll(req: Request, res: Response) {
+    res.send(await billService.deleteAll());
   }
 }
 

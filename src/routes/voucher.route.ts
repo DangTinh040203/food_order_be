@@ -4,7 +4,7 @@ import voucherController from '@/controllers/voucher.controller';
 
 const router = express.Router();
 
-router.post('/insert', voucherController.insert);
-router.get('/get', voucherController.get);
+router.post('/', voucherController.insertVoucher);
+router.get('/', voucherController.getVouchers);
 
 export default router;

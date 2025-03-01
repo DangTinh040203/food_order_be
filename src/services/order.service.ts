@@ -23,7 +23,7 @@ class OrderService {
     await tableModel.updateMany({}, { isAvailable: true });
     return new OkResponse('All orders deleted');
   }
-  async insert(
+  async insertOrder(
     payload: [
       Array<{
         food: Food;
@@ -105,17 +105,15 @@ class OrderService {
   }
 
   async updateOrder(
-    payload: [
-      billId: string,
-      orderId: string,
-      Array<{
-        food: Food;
-        tableId: string;
-        quantity: number;
-      }>,
-    ],
+    billId: string,
+    orderId: string,
+    payload: Array<{
+      food: Food;
+      quantity: number;
+      tableId: string;
+    }>,
   ) {
-    const [billId, orderID, items] = payload;
+    const items = payload;
 
     try {
       if (items.length === 0) {
@@ -137,7 +135,7 @@ class OrderService {
 
       const newOrder = await orderModel.findOneAndUpdate(
         {
-          _id: orderID,
+          _id: orderId,
         },
         {
           items: items.map((item) => ({
