@@ -13,12 +13,17 @@ interface OrderInsertRequest {
   voucher: {
     code: string;
   };
+
+  message: string;
 }
 
 interface OrderUpdateRequest {
-  food: Food;
-  quantity: number;
-  tableId: string;
+  items: Array<{
+    food: Food;
+    tableId: string;
+    quantity: number;
+  }>;
+  message: string;
 }
 
 class OrderController {
@@ -29,8 +34,8 @@ class OrderController {
     res.send(await orderService.delete());
   }
   async insertOrder(req: Request, res: Response) {
-    const { items, voucher }: OrderInsertRequest = req.body;
-    res.send(await orderService.insertOrder([items, voucher]));
+    const payload: OrderInsertRequest = req.body;
+    res.send(await orderService.insertOrder(payload));
   }
 
   async rejectOrder(req: Request, res: Response) {
@@ -47,8 +52,9 @@ class OrderController {
 
   async updateOrder(req: Request, res: Response) {
     const { billId, orderId } = req.params;
-    const items: Array<OrderUpdateRequest> = req.body;
-    res.send(await orderService.updateOrder(billId, orderId, items));
+
+    const payload: OrderUpdateRequest = req.body;
+    res.send(await orderService.updateOrder(billId, orderId, payload));
   }
 }
 
