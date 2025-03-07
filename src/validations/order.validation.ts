@@ -33,6 +33,7 @@ export class OrderValidation {
           })
           .optional()
           .transform((val) => val ?? null),
+        message: z.string().optional().or(z.literal('')),
       }),
     };
   }
@@ -63,26 +64,29 @@ export class OrderValidation {
 
   static updateOrderSchema() {
     return {
-      body: z
-        .array(
-          z.object({
-            food: z.object({
-              _id: z.string().nonempty().refine(isValidObjectId, {
+      body: z.object({
+        items: z
+          .array(
+            z.object({
+              food: z.object({
+                _id: z.string().nonempty().refine(isValidObjectId, {
+                  message: 'Invalid ObjectId format',
+                }),
+                price: z.number().positive({
+                  message: 'Price must be a positive number',
+                }),
+              }),
+              tableId: z.string().nonempty().refine(isValidObjectId, {
                 message: 'Invalid ObjectId format',
               }),
-              price: z.number().positive({
-                message: 'Price must be a positive number',
+              quantity: z.number().int().positive({
+                message: 'Quantity must be a positive integer',
               }),
             }),
-            quantity: z.number().int().positive({
-              message: 'Quantity must be a positive integer',
-            }),
-            tableId: z.string().nonempty().refine(isValidObjectId, {
-              message: 'Invalid ObjectId format',
-            }),
-          }),
-        )
-        .nonempty({ message: 'Array cannot be empty' }),
+          )
+          .nonempty({ message: 'Array cannot be empty' }),
+        message: z.string().optional().or(z.literal('')),
+      }),
     };
   }
 }

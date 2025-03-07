@@ -44,6 +44,15 @@ const orderSchema = new mongoose.Schema(
       ],
       default: ORDER_STATUS.ORDERED,
     },
+    messages: [
+      {
+        type: String,
+        timestamp: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
