@@ -1,4 +1,4 @@
-import { ORDER_STATUS } from '@/constants';
+import { type ORDER_STATUS } from '@/constants';
 import { SOCKET_ACTIONS } from '@/constants/socket';
 import { BadRequestError, InternalServerError } from '@/core/error.response';
 import { CreatedResponse, OkResponse } from '@/core/success.response';
@@ -89,18 +89,27 @@ class OrderService {
 
   async rejectOrder(reason: string, orderId: string) {
     try {
-      await Promise.all([
-        orderModel.findOneAndUpdate({}, { status: ORDER_STATUS.REJECTED }),
-        rejectedOrderModel.create({
-          orderId,
-          reason,
-        }),
-      ]);
+      await rejectedOrderModel.create({
+        orderId,
+        reason,
+      });
 
       return new OkResponse('Rejected Order');
     } catch (error) {
       throw new InternalServerError('Something went wrong!');
     }
+  }
+
+  async getRejectedOrder() {
+    const rejectedOrders = await rejectedOrderModel.find();
+    return rejectedOrders
+      ? new OkResponse('Rejected Orders found', { rejectedOrders })
+      : new OkResponse('No rejected orders found');
+  }
+
+  async deleteRejectedOrder() {
+    await rejectedOrderModel.deleteMany();
+    return new OkResponse('All rejected orders deleted');
   }
 
   async updateStatus(orderId: string, status: ORDER_STATUS) {

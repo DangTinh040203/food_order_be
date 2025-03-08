@@ -19,6 +19,8 @@ router.post(
   asyncHandler(orderController.rejectOrder),
 );
 
+router.get('/reject', asyncHandler(orderController.getRejectedOrder));
+router.delete('/reject', asyncHandler(orderController.deleteRejectedOrder));
 router.post(
   '/:orderId/status',
   validationRequest(OrderValidation.acceptOrderSchema()),

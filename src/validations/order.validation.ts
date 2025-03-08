@@ -43,9 +43,9 @@ export class OrderValidation {
     return {
       body: z.object({
         reason: z.string().nonempty({ message: 'Reject message is required' }),
-        orderId: z.string().nonempty().refine(isValidObjectId, {
-          message: 'Invalid ObjectId format',
-        }),
+        // orderId: z.string().nonempty().refine(isValidObjectId, {
+        //   message: 'Invalid ObjectId format',
+        // }),
       }),
     };
   }
