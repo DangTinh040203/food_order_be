@@ -16,6 +16,12 @@ router.patch(
   asyncHandler(foodController.updateFood),
 );
 
+router.patch(
+  '/:id/availability',
+  validationRequest(FoodValidation.updateFoodAvailabilitySchema()),
+  asyncHandler(foodController.updateFoodAvailability),
+);
+
 router.delete(
   '/:id',
   validationRequest(FoodValidation.deleteFoodSchema()),

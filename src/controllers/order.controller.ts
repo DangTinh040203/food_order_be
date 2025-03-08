@@ -51,6 +51,13 @@ class OrderController {
   async deleteRejectedOrder(req: Request, res: Response) {
     res.send(await orderService.deleteRejectedOrder());
   }
+
+  async reOrder(req: Request, res: Response) {
+    const { billId, orderId } = req.params;
+    const payload: OrderUpdateRequest = req.body;
+    res.send(await orderService.reOrder(billId, orderId, payload));
+  }
+
   async updateStatus(req: Request, res: Response) {
     const orderId = req.params.orderId;
     const { status }: { status: ORDER_STATUS } = req.body;

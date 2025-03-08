@@ -52,10 +52,12 @@ export class OrderValidation {
 
   static acceptOrderSchema() {
     return {
-      body: z.object({
+      params: z.object({
         orderId: z.string().nonempty().refine(isValidObjectId, {
           message: 'Invalid ObjectId format',
         }),
+      }),
+      body: z.object({
         status: z.nativeEnum(ORDER_STATUS, {
           message: 'Status must be either ACCEPTED, REJECTED, or DELIVERED',
         }),
