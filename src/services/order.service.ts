@@ -23,29 +23,33 @@ class OrderService {
     await tableModel.updateMany({}, { isAvailable: true });
     return new OkResponse('All orders deleted');
   }
-  async insertOrder(
-    payload: [
-      Array<{
-        food: Food;
-        tableId: string;
-        quantity: number;
-      }>,
-      { code: string },
-    ],
-  ) {
-    const [items, voucher] = payload;
+
+  async insertOrder(payload: {
+    items: Array<{
+      food: Food;
+      tableId: string;
+      quantity: number;
+    }>;
+    voucher: {
+      code: string;
+    };
+    message: string;
+  }) {
+    const { items, voucher, message } = payload;
+
     try {
       if (items.length === 0) {
         throw new BadRequestError('No items to order');
       }
       const [newOrder] = await Promise.all([
         orderModel.create({
-          tableId: payload[0][0].tableId,
+          tableId: items[0].tableId,
           items: items.map((item) => ({
             foodId: item.food._id,
             price: item.food.price,
             quantity: item.quantity,
           })),
+          messages: message,
         }),
         tableModel.findOneAndUpdate(
           { _id: items[0].tableId },
@@ -107,22 +111,47 @@ class OrderService {
   async updateOrder(
     billId: string,
     orderId: string,
-    payload: Array<{
-      food: Food;
-      quantity: number;
-      tableId: string;
-    }>,
+
+    payload: {
+      items: Array<{
+        food: Food;
+        quantity: number;
+        tableId: string;
+      }>;
+      message: string;
+    },
   ) {
-    const items = payload;
+    const { items, message } = payload;
 
     try {
       if (items.length === 0) {
         throw new BadRequestError('No items to order');
       }
+
+      //check quantity current if less than old quantity ordered before then throw error
+      const order = (await orderModel.findOne({ _id: orderId })) as Order;
+      const oldQuantityItems = order.items.map((item) => {
+        return {
+          foodId: item.foodId,
+          quantity: item.quantity,
+        };
+      });
+      const isLessQuantity = items.some((item) => {
+        const oldQuantityItem = oldQuantityItems.find((oldItem) => {
+          return oldItem.foodId.toString() === item.food._id.toString();
+        });
+        return oldQuantityItem && oldQuantityItem.quantity > item.quantity;
+      });
+
+      if (isLessQuantity) {
+        throw new BadRequestError('Cannot reduce quantity');
+      }
+
       const priceForNewFoods = items.reduce((sum, item) => {
         return sum + item.food.price * item.quantity;
       }, 0);
 
+      //Adding message to bill
       const newBill = await billModel.findOneAndUpdate(
         { _id: billId },
         {
@@ -143,6 +172,10 @@ class OrderService {
             price: item.food.price,
             quantity: item.quantity,
           })),
+
+          $push: {
+            messages: message,
+          },
         },
         { new: true },
       );
@@ -153,7 +186,7 @@ class OrderService {
 
       return new OkResponse('Order updated', { newBill, newOrder });
     } catch (error) {
-      throw new InternalServerError('Something went wrong');
+      throw new InternalServerError(`Something went wrong`);
     }
   }
 }
