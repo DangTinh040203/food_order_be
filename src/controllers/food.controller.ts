@@ -17,6 +17,12 @@ class FoodController {
     res.send(await foodService.insertFood(payload));
   }
 
+  async updateFoodAvailability(req: Request, res: Response) {
+    const id = req.params.id;
+    const { isAvailable } = req.body as { isAvailable: boolean };
+    res.send(await foodService.updateFoodAvailability(id, isAvailable));
+  }
+
   async updateFood(req: Request, res: Response) {
     const id = convertObjectId(req.params.id);
     const payload: Partial<Food> = req.body;

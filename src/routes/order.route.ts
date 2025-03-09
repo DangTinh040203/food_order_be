@@ -19,11 +19,22 @@ router.post(
   asyncHandler(orderController.rejectOrder),
 );
 
+router.get('/reject', asyncHandler(orderController.getRejectedOrder));
+
+router.delete('/reject', asyncHandler(orderController.deleteRejectedOrder));
+
+router.patch(
+  '/:billId/:orderId/reorder',
+  validationRequest(OrderValidation.updateOrderSchema()),
+  asyncHandler(orderController.reOrder),
+);
+
 router.post(
   '/:orderId/status',
   validationRequest(OrderValidation.acceptOrderSchema()),
   asyncHandler(orderController.updateStatus),
 );
+
 
 router.patch(
   '/bill/:billId/order/:orderId',

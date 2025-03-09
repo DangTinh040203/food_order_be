@@ -23,6 +23,18 @@ class FoodService {
     return new OkResponse('Successfully!', foods);
   }
 
+  async updateFoodAvailability(id: string, isAvailable: boolean) {
+    const food = await foodModel.findByIdAndUpdate(
+      id,
+      {
+        isAvailable,
+      },
+      { new: true },
+    );
+    if (!food) throw new NotFoundError('Food not found');
+    return new OkResponse('Food availability updated successfully', food);
+  }
+
   async insertFood(payload: Omit<Food, 'id'>) {
     const food = await foodModel.create(payload);
     return new CreatedResponse('Food created successfully', food);

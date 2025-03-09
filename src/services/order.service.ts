@@ -1,4 +1,4 @@
-import { ORDER_STATUS } from '@/constants';
+import { type ORDER_STATUS } from '@/constants';
 import { SOCKET_ACTIONS } from '@/constants/socket';
 import { BadRequestError, InternalServerError } from '@/core/error.response';
 import { CreatedResponse, OkResponse } from '@/core/success.response';
@@ -9,6 +9,7 @@ import rejectedOrderModel from '@/models/rejected-order.model';
 import tableModel from '@/models/table.model';
 import voucherModel from '@/models/voucher.model';
 import SocketInstance from '@/services/socket.instance';
+import { convertObjectId } from '@/utils/convertObjectId';
 
 class OrderService {
   async get() {
@@ -89,18 +90,86 @@ class OrderService {
 
   async rejectOrder(reason: string, orderId: string) {
     try {
-      await Promise.all([
-        orderModel.findOneAndUpdate({}, { status: ORDER_STATUS.REJECTED }),
-        rejectedOrderModel.create({
-          orderId,
-          reason,
-        }),
-      ]);
+      await rejectedOrderModel.create({
+        orderId,
+        reason,
+      });
 
       return new OkResponse('Rejected Order');
     } catch (error) {
       throw new InternalServerError('Something went wrong!');
     }
+  }
+
+  async getRejectedOrder() {
+    const rejectedOrders = await rejectedOrderModel.find();
+    return rejectedOrders
+      ? new OkResponse('Rejected Orders found', { rejectedOrders })
+      : new OkResponse('No rejected orders found');
+  }
+
+  async deleteRejectedOrder() {
+    await rejectedOrderModel.deleteMany();
+    return new OkResponse('All rejected orders deleted');
+  }
+
+  async reOrder(
+    billId: string,
+    orderId: string,
+    payload: {
+      items: Array<{
+        food: Food;
+        quantity: number;
+        tableId: string;
+      }>;
+      message: string;
+    },
+  ) {
+    const { items, message } = payload;
+
+    const rejectedOrder = await rejectedOrderModel.findOne({ orderId });
+    if (!rejectedOrder) {
+      throw new BadRequestError('Rejected order not found');
+    }
+
+    if (items.length === 0) {
+      throw new BadRequestError('No items to reorder');
+    }
+
+    const totalPrice = items.reduce(
+      (sum, item) => sum + item.food.price * item.quantity,
+      0,
+    );
+
+    const updatedBill = await billModel.findOneAndUpdate(
+      { _id: billId },
+      { totalPrice },
+      { new: true },
+    );
+
+    const updatedOrder = await orderModel.findOneAndUpdate(
+      { _id: orderId },
+      {
+        items: items.map((item) => ({
+          foodId: item.food._id,
+          price: item.food.price,
+          quantity: item.quantity,
+        })),
+        $push: { messages: message },
+      },
+      { new: true },
+    );
+
+    if (!updatedBill || !updatedOrder) {
+      throw new BadRequestError('Order or bill not found');
+    }
+
+    await rejectedOrderModel.findOneAndDelete({ orderId });
+
+    return new OkResponse('Order has been successfully reordered', {
+      updatedBill,
+      updatedOrder,
+    });
   }
 
   async updateStatus(orderId: string, status: ORDER_STATUS) {

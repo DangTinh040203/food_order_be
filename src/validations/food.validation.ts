@@ -17,6 +17,19 @@ export class FoodValidation {
     };
   }
 
+  static updateFoodAvailabilitySchema() {
+    return {
+      params: z.object({
+        id: z.string().refine(isValidObjectId, {
+          message: 'Invalid ObjectId format',
+        }),
+      }),
+      body: z.object({
+        isAvailable: z.boolean().optional(),
+      }),
+    };
+  }
+
   static deleteFoodSchema() {
     return {
       params: z.object({
