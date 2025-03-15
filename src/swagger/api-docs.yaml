@@ -1,58 +1,35 @@
 openapi: 3.0.3
 info:
-  title: Food & Table Management API - OpenAPI 3.0
-  description: |-
-    This API is designed for managing food items and tables in a restaurant. It provides the following functionalities:
-    - Retrieve a list of food items and tables
-    - Add, update, and delete food items and tables
-    - Upload food thumbnail images
-
-    The API follows the OpenAPI 3.0 standard, making it easy to integrate and extend. Requests should be sent in JSON format.
-
-    Some useful resources:
-    - [OpenAPI Specification](https://swagger.io/specification/)
-    - [Sample API Repository](https://github.com/swagger-api/swagger-petstore)
-
-  termsOfService: http://swagger.io/terms/
-  contact:
-    email: apiteam@swagger.io
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.11
-externalDocs:
-  description: Find out more about Swagger
-  url: http://swagger.io
+  title: Food Management API
+  description: API for managing food items in a restaurant.
+  version: 1.0.0
 servers:
   - url: http://localhost:3000
-tags:
-  - name: food
-    description: Operations related to food items
-  - name: table
-    description: Operations related to tables
 paths:
   /food:
     get:
-      summary: Get paginated food items
-      description: Retrieves a paginated list of food items based on page and limit.
+      summary: Get a list of foods with pagination
+      description: Retrieve a paginated list of foods, sorted by creation date in descending order.
+      tags:
+        - Food
       parameters:
         - name: page
           in: query
+          description: Page number (default is 1)
           required: false
-          description: The page number (default is 1).
           schema:
             type: integer
             example: 1
         - name: limit
           in: query
+          description: Number of items per page (default is 10)
           required: false
-          description: The number of food items per page (default is 10).
           schema:
             type: integer
             example: 10
       responses:
-        '200':
-          description: Successfully retrieved paginated food items.
+        200:
+          description: Successfully retrieved list of foods
           content:
             application/json:
               schema:
@@ -60,50 +37,121 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Successfully!'
+                    example: Successfully!
                   status:
                     type: integer
                     example: 200
-                  totalItems:
-                    type: integer
-                    example: 100
-                  totalPages:
-                    type: integer
-                    example: 10
-                  currentPage:
-                    type: integer
-                    example: 1
-                  hasNextPage:
-                    type: boolean
-                    example: true
-                  hasPrevPage:
-                    type: boolean
-                    example: false
-                  prevPage:
-                    type: integer
-                    nullable: true
-                    example: null
-                  nextPage:
-                    type: integer
-                    nullable: true
-                    example: 2
                   data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Food'
-  /food/insert:
+                    type: object
+                    properties:
+                      docs:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: '67c1c58322cabb5605f05ba0'
+                            name:
+                              type: string
+                              example: 'Gỏi Cuốn'
+                            category:
+                              type: string
+                              example: 'FOOD'
+                            description:
+                              type: string
+                              example: 'Gỏi cuốn tôm thịt với rau sống và nước chấm đậm đà.'
+                            price:
+                              type: integer
+                              example: 35000
+                            isAvailable:
+                              type: boolean
+                              example: true
+                            thumbnail:
+                              type: string
+                              example: 'https://example.com/goicuon.jpg'
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: '2025-02-28T14:17:39.693Z'
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              example: '2025-03-08T16:51:19.569Z'
+                            __v:
+                              type: integer
+                              example: 0
+                      totalDocs:
+                        type: integer
+                        example: 9
+                      limit:
+                        type: integer
+                        example: 10
+                      totalPages:
+                        type: integer
+                        example: 1
+                      page:
+                        type: integer
+                        example: 1
+                      pagingCounter:
+                        type: integer
+                        example: 1
+                      hasPrevPage:
+                        type: boolean
+                        example: false
+                      hasNextPage:
+                        type: boolean
+                        example: false
+                      prevPage:
+                        type: integer
+                        nullable: true
+                        example: null
+                      nextPage:
+                        type: integer
+                        nullable: true
+                        example: null
     post:
       summary: Insert a new food item
-      description: Adds a new food item to the system.
+      description: Add a new food item to the database.
+      tags:
+        - Food
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InsertFood'
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Gỏi Cuốn'
+                category:
+                  type: string
+                  example: 'FOOD'
+                description:
+                  type: string
+                  example: 'Gỏi cuốn tôm thịt với rau sống và nước chấm đậm đà.'
+                price:
+                  type: integer
+                  example: 35000
+                isAvailable:
+                  type: boolean
+                  example: true
+                thumbnail:
+                  type: string
+                  format: uri
+                  example: 'https://example.com/goicuon.jpg'
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: '2025-02-28T14:17:39.693Z'
+                updatedAt:
+                  type: string
+                  format: date-time
+                  example: '2025-03-08T16:51:19.569Z'
       responses:
         '201':
-          description: Food created successfully.
+          description: Food item created successfully.
           content:
             application/json:
               schema:
@@ -113,77 +161,76 @@ paths:
                     type: string
                     example: 'Food created successfully'
                   data:
-                    $ref: '#/components/schemas/Food'
-        '400':
-          description: Invalid request or validation error.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: 'Invalid request data'
-  /food/delete/{id}:
-    delete:
-      summary: Delete a food item
-      description: Deletes a specific food item based on the provided ID.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: The unique identifier of the food item (MongoDB ObjectId).
-          schema:
-            type: string
-            example: '65d1c3eabedc3e001e234567' # Dữ liệu mẫu
-      responses:
-        '200':
-          description: Food item deleted successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Food item deleted successfully'
-        '404':
-          description: Food item not found.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: 'Food not found'
-        '400':
-          description: Invalid ObjectId format.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: 'Invalid ObjectId format'
-  /food/update/{id}:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67c1c58322cabb5605f05ba0'
+                      name:
+                        type: string
+                        example: 'Gỏi Cuốn'
+                      category:
+                        type: string
+                        example: 'FOOD'
+                      description:
+                        type: string
+                        example: 'Gỏi cuốn tôm thịt với rau sống và nước chấm đậm đà.'
+                      price:
+                        type: integer
+                        example: 35000
+                      isAvailable:
+                        type: boolean
+                        example: true
+                      thumbnail:
+                        type: string
+                        format: uri
+                        example: 'https://example.com/goicuon.jpg'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-02-28T14:17:39.693Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-03-08T16:51:19.569Z'
+  /food/{id}:
     patch:
-      summary: Update food details
-      description: Updates an existing food item by its ID.
+      summary: Update a food item
+      description: Update details of an existing food item.
+      tags:
+        - Food
       parameters:
         - name: id
           in: path
           required: true
-          description: The unique identifier of the food item (MongoDB ObjectId).
           schema:
             type: string
+          description: The unique identifier of the food item.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateFood'
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Bánh Xèo'
+                category:
+                  type: string
+                  example: 'FOOD'
+                description:
+                  type: string
+                  example: 'Bánh xèo giòn rụm với nhân tôm, thịt và giá đỗ.'
+                price:
+                  type: integer
+                  example: 45000
+                isAvailable:
+                  type: boolean
+                  example: true
+                thumbnail:
+                  type: string
+                  example: 'https://example.com/banhxeo.jpg'
       responses:
         '200':
           description: Food item updated successfully.
@@ -194,23 +241,99 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Food updated successfully
+                    example: 'Food updated successfully'
                   data:
-                    $ref: '#/components/schemas/Food'
-        '404':
-          description: Food item not found.
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67c1c58322cabb5605f05ba5'
+                      name:
+                        type: string
+                        example: 'Bánh Xèo'
+                      category:
+                        type: string
+                        example: 'FOOD'
+                      description:
+                        type: string
+                        example: 'Bánh xèo giòn rụm với nhân tôm, thịt và giá đỗ.'
+                      price:
+                        type: integer
+                        example: 45000
+                      isAvailable:
+                        type: boolean
+                        example: true
+                      thumbnail:
+                        type: string
+                        example: 'https://example.com/banhxeo.jpg'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-02-28T14:17:09.371Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-03-08T16:51:21.228Z'
+    delete:
+      summary: Delete a food item
+      description: Remove a food item from the system.
+      tags:
+        - Food
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Food item deleted successfully.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
+                  message:
                     type: string
-                    example: Food not found
-  /food/upload-thumbnail:
+                    example: 'Food deleted successfully'
+  /food/{id}/availability:
+    patch:
+      summary: Update food availability
+      description: Update the availability status of a food item.
+      tags:
+        - Food
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isAvailable:
+                  type: boolean
+      responses:
+        '200':
+          description: Availability updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Availability updated'
+  /food/thumbnail:
     post:
-      summary: Upload a food thumbnail to S3
-      description: Uploads an image file as a thumbnail for a food item and returns the file URL.
+      summary: Upload a food thumbnail
+      description: Upload an image file as a food thumbnail.
+      tags:
+        - Food
       requestBody:
         required: true
         content:
@@ -221,7 +344,6 @@ paths:
                 thumbnail:
                   type: string
                   format: binary
-                  description: The image file to be uploaded as a thumbnail.
       responses:
         '200':
           description: Thumbnail uploaded successfully.
@@ -238,40 +360,32 @@ paths:
                     properties:
                       url:
                         type: string
-                        description: URL of the uploaded thumbnail.
-                        example: 'https://cdn.example.com/thumbnails/1708601923_image.jpg'
-        '500':
-          description: Internal server error (e.g., AWS S3 failure).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: 'Something went wrong!'
+                        example: 'https://cdn.example.com/thumbnails/image.jpg'
+
   /table:
     get:
-      summary: Get paginated tables
-      description: Retrieves a paginated list of tables based on page and limit.
+      summary: Get list of tables
+      description: Retrieve a paginated list of tables.
+      tags:
+        - Table
       parameters:
         - name: page
           in: query
+          description: Page number (default is 1)
           required: false
-          description: The page number (default is 1).
           schema:
             type: integer
             example: 1
         - name: limit
           in: query
+          description: Number of items per page (default is 10)
           required: false
-          description: The number of tables per page (default is 10).
           schema:
             type: integer
             example: 10
       responses:
-        '200':
-          description: Successfully retrieved paginated tables.
+        200:
+          description: Successfully retrieved tables.
           content:
             application/json:
               schema:
@@ -279,49 +393,103 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Successfully!'
+                    example: 'Tables found successfully'
                   status:
                     type: integer
                     example: 200
-                  totalItems:
-                    type: integer
-                    example: 50
-                  totalPages:
-                    type: integer
-                    example: 5
-                  currentPage:
-                    type: integer
-                    example: 1
-                  hasNextPage:
-                    type: boolean
-                    example: true
-                  hasPrevPage:
-                    type: boolean
-                    example: false
-                  prevPage:
-                    type: integer
-                    nullable: true
-                    example: null
-                  nextPage:
-                    type: integer
-                    nullable: true
-                    example: 2
                   data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Table'
-  /table/insert:
+                    type: object
+                    properties:
+                      docs:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: '67bc37ec1576d17f62cf49b9'
+                            numericalOrder:
+                              type: integer
+                              example: 14
+                            isAvailable:
+                              type: boolean
+                              example: true
+                            currentNumOfPeople:
+                              type: integer
+                              example: 4
+                            maxNumOfPeople:
+                              type: integer
+                              example: 6
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: '2025-02-22T10:50:51.852Z'
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              example: '2025-03-15T07:32:10.405Z'
+                            __v:
+                              type: integer
+                              example: 0
+                      totalDocs:
+                        type: integer
+                        example: 14
+                      limit:
+                        type: integer
+                        example: 10
+                      totalPages:
+                        type: integer
+                        example: 2
+                      page:
+                        type: integer
+                        example: 1
+                      pagingCounter:
+                        type: integer
+                        example: 1
+                      hasPrevPage:
+                        type: boolean
+                        example: false
+                      hasNextPage:
+                        type: boolean
+                        example: true
+                      prevPage:
+                        type: integer
+                        nullable: true
+                        example: null
+                      nextPage:
+                        type: integer
+                        nullable: true
+                        example: 2
     post:
-      summary: Insert a new table
-      description: Adds a new table to the system and emits a WebSocket event.
+      summary: Add a new table
+      description: Create a new table entry.
+      tags:
+        - Table
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InsertTable'
+              type: object
+              properties:
+                numericalOrder:
+                  type: integer
+                  example: 5
+                  description: The numerical order of the table.
+                isAvailable:
+                  type: boolean
+                  example: true
+                  description: Indicates if the table is available.
+                currentNumOfPeople:
+                  type: integer
+                  example: 3
+                  description: The current number of people seated at the table.
+                maxNumOfPeople:
+                  type: integer
+                  example: 6
+                  description: The maximum capacity of the table.
       responses:
-        '200':
+        '201':
           description: Table created successfully.
           content:
             application/json:
@@ -330,26 +498,72 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Tables created successfully'
+                    example: 'Table created successfully'
                   data:
-                    $ref: '#/components/schemas/Table'
-  /table/update/{id}:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67bc37ec1576d17f62cf49b9'
+                      numericalOrder:
+                        type: integer
+                        example: 5
+                      isAvailable:
+                        type: boolean
+                        example: true
+                      currentNumOfPeople:
+                        type: integer
+                        example: 3
+                      maxNumOfPeople:
+                        type: integer
+                        example: 6
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-02-22T10:50:51.852Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-03-15T07:32:10.405Z'
+                      __v:
+                        type: integer
+                        example: 0
+  /table/{id}:
     patch:
       summary: Update a table
-      description: Updates an existing table's details.
+      description: Modify details of an existing table.
+      tags:
+        - Table
       parameters:
         - name: id
           in: path
           required: true
-          description: The unique identifier of the table.
           schema:
             type: string
+          description: The unique identifier of the table to be updated.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateTable'
+              type: object
+              properties:
+                numericalOrder:
+                  type: integer
+                  example: 5
+                  description: The numerical order of the table.
+                isAvailable:
+                  type: boolean
+                  example: true
+                  description: Indicates if the table is available.
+                currentNumOfPeople:
+                  type: integer
+                  example: 3
+                  description: The current number of people seated at the table.
+                maxNumOfPeople:
+                  type: integer
+                  example: 6
+                  description: The maximum capacity of the table.
       responses:
         '200':
           description: Table updated successfully.
@@ -362,31 +576,48 @@ paths:
                     type: string
                     example: 'Table updated successfully'
                   data:
-                    $ref: '#/components/schemas/Table'
-        '404':
-          description: Table not found.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: 'Table not found'
-  /table/delete/{id}:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67bc37ec1576d17f62cf49b9'
+                      numericalOrder:
+                        type: integer
+                        example: 5
+                      isAvailable:
+                        type: boolean
+                        example: true
+                      currentNumOfPeople:
+                        type: integer
+                        example: 3
+                      maxNumOfPeople:
+                        type: integer
+                        example: 6
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-02-22T10:50:51.852Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-03-15T07:32:10.405Z'
+                      __v:
+                        type: integer
+                        example: 0
     delete:
       summary: Delete a table
-      description: Deletes a specific table based on the provided ID.
+      description: Remove a table by ID
+      tags:
+        - Table
       parameters:
         - name: id
           in: path
           required: true
-          description: The unique identifier of the table.
           schema:
             type: string
       responses:
         '200':
-          description: Table deleted successfully.
+          description: Table deleted successfully
           content:
             application/json:
               schema:
@@ -394,202 +625,724 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Table deleted successfully'
-        '404':
-          description: Table not found.
+
+  /order:
+    post:
+      summary: Create a new order
+      description: Place a new order with items, table, and an optional voucher.
+      tags:
+        - Order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  description: List of ordered food items.
+                  items:
+                    type: object
+                    properties:
+                      food:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: '67c1c58322cabb5605f05ba0'
+                            description: The unique identifier of the food item.
+                          price:
+                            type: number
+                            example: 12.99
+                            description: The price of the food item.
+                      tableId:
+                        type: string
+                        example: '67bc37f21576d17f62cf49bb'
+                        description: The unique identifier of the table.
+                      quantity:
+                        type: integer
+                        example: 2
+                        description: The quantity of the ordered food item.
+                voucher:
+                  type: object
+                  description: Optional voucher details.
+                  properties:
+                    code:
+                      type: string
+                      example: 'DISCOUNT10'
+                      description: The voucher code for discount.
+                  nullable: true
+                message:
+                  type: string
+                  example: 'Please serve quickly'
+                  description: Optional message for the order.
+      responses:
+        '201':
+          description: Order created successfully.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
+                  message:
                     type: string
-                    example: 'Table not found'
+                    example: 'Order created successfully'
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67bc37ec1576d17f62cf49b9'
+                        description: The unique identifier of the order.
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            food:
+                              type: object
+                              properties:
+                                _id:
+                                  type: string
+                                  example: '67c1c58322cabb5605f05ba0'
+                                price:
+                                  type: number
+                                  example: 12.99
+                            tableId:
+                              type: string
+                              example: '67bc37f21576d17f62cf49bb'
+                            quantity:
+                              type: integer
+                              example: 2
+                      voucher:
+                        type: object
+                        nullable: true
+                        properties:
+                          code:
+                            type: string
+                            example: 'DISCOUNT10'
+                      message:
+                        type: string
+                        example: 'Please serve quickly'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-03-15T07:32:10.405Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-03-15T07:32:10.405Z'
+                      __v:
+                        type: integer
+                        example: 0
+    get:
+      summary: Get all orders
+      description: Retrieve a list of all orders along with their associated bills.
+      tags:
+        - Order
+      responses:
+        '200':
+          description: Orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Orders found'
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      bills:
+                        type: array
+                        description: List of bills associated with the orders.
+                        items:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: '67d53885c92203568eb709b1'
+                            totalPrice:
+                              type: number
+                              example: 25.98
+                            orderId:
+                              type: string
+                              example: '67d53885c92203568eb709ac'
+                            isPaid:
+                              type: boolean
+                              example: false
+                            voucherId:
+                              type: string
+                              example: '67bebd626e1de48060da6adb'
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: '2025-03-15T08:21:25.638Z'
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              example: '2025-03-15T08:21:25.638Z'
+                            __v:
+                              type: integer
+                              example: 0
+                      orders:
+                        type: array
+                        description: List of orders.
+                        items:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: '67d53885c92203568eb709ac'
+                            tableId:
+                              type: string
+                              example: '67bc37f21576d17f62cf49bb'
+                            items:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  foodId:
+                                    type: string
+                                    example: '67c1c58322cabb5605f05ba0'
+                                  price:
+                                    type: number
+                                    example: 12.99
+                                  quantity:
+                                    type: integer
+                                    example: 2
+                                  _id:
+                                    type: string
+                                    example: '67d53885c92203568eb709ad'
+                            status:
+                              type: string
+                              example: 'ORDERED'
+                            messages:
+                              type: array
+                              items:
+                                type: string
+                              example: ['Please serve quickly']
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: '2025-03-15T08:21:25.626Z'
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              example: '2025-03-15T08:21:25.626Z'
+                            __v:
+                              type: integer
+                              example: 0
+    delete:
+      summary: Delete all orders
+      description: Remove all orders and mark tables as available
+      tags:
+        - Order
+      responses:
+        '200':
+          description: Orders deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'All orders deleted'
+                  status:
+                    type: integer
+                    example: 200
+  /order/{orderId}/reject:
+    post:
+      summary: Reject an order
+      description: Reject an order with a given reason
+      tags:
+        - Order
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: 'Out of stock'
+      responses:
+        '200':
+          description: Order rejected successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Order rejected successfully'
+                  status:
+                    type: integer
+                    example: 200
+  /order/reject:
+    get:
+      summary: Get rejected orders
+      description: Retrieve a list of all rejected orders
+      tags:
+        - Order
+      responses:
+        '200':
+          description: Rejected orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Rejected Orders found'
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      rejectedOrders:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: '67d53a2dc92203568eb70a01'
+                            orderId:
+                              type: string
+                              example: '67d5388bc92203568eb709b4'
+                            reason:
+                              type: string
+                              example: 'Customer canceled the order'
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: '2025-03-15T08:30:25.638Z'
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              example: '2025-03-15T08:30:25.638Z'
 
-components:
-  schemas:
-    Food:
-      type: object
-      required:
-        - name
-        - category
-        - price
-        - thumbnail
-      properties:
-        _id:
-          type: string
-          description: Unique identifier for the food item (MongoDB ObjectId).
-          example: '65d1c3eabedc3e001e234567'
-        name:
-          type: string
-          description: Name of the food item.
-          example: 'Cheeseburger'
-        category:
-          type: string
-          enum: ['DRINK', 'FOOD']
-          description: Category of the food item.
-          example: 'FOOD'
-        description:
-          type: string
-          description: A brief description of the food item.
-          example: 'A delicious cheeseburger with fresh ingredients.'
-        price:
-          type: number
-          format: float
-          description: Price of the food item.
-          example: 5.99
-        isAvailable:
-          type: boolean
-          description: Availability status of the food item.
-          example: true
-        thumbnail:
-          type: string
-          description: URL or base64 string of the food's thumbnail image.
-          example: 'https://example.com/images/cheeseburger.jpg'
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp when the food item was created.
-          example: '2024-03-01T12:00:00Z'
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp when the food item was last updated.
-          example: '2024-03-05T15:30:00Z'
-    UpdateFood:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The updated name of the food item (optional).
-          example: 'Veggie Burger'
-        category:
-          type: string
-          enum: ['DRINK', 'FOOD']
-          description: The updated category (optional).
-          example: 'FOOD'
-        description:
-          type: string
-          description: Updated description of the food item (optional).
-          example: 'A delicious veggie burger with fresh lettuce and tomato.'
-        price:
-          type: number
-          format: float
-          description: Updated price (optional, must be positive).
-          example: 6.99
-        thumbnail:
-          type: string
-          description: Updated thumbnail URL or base64 string (optional).
-          example: 'https://example.com/images/veggie-burger.jpg'
-        isAvailable:
-          type: boolean
-          description: Updated availability status (optional).
-          example: true
-    InsertFood:
-      type: object
-      required:
-        - name
-        - category
-        - price
-        - thumbnail
-      properties:
-        name:
-          type: string
-          description: The name of the food item.
-          example: 'Cheeseburger'
-        category:
-          type: string
-          enum: ['DRINK', 'FOOD']
-          description: The category of the food item.
-          example: 'FOOD'
-        description:
-          type: string
-          description: A brief description of the food item (optional).
-          example: 'A delicious cheeseburger with fresh ingredients.'
-        price:
-          type: number
-          format: float
-          description: The price of the food item (must be positive).
-          example: 5.99
-        thumbnail:
-          type: string
-          description: URL or base64 string of the food's thumbnail image.
-          example: 'https://example.com/images/cheeseburger.jpg'
-        isAvailable:
-          type: boolean
-          description: Availability status of the food item (optional).
-          example: true
-    Table:
-      type: object
-      required:
-        - numericalOrder
-        - maxNumOfPeople
-      properties:
-        _id:
-          type: string
-          description: Unique identifier for the table (MongoDB ObjectId).
-        numericalOrder:
-          type: number
-          description: The table number.
-          example: 1
-        isAvailable:
-          type: boolean
-          description: Whether the table is available.
-          example: true
-        currentNumOfPeople:
-          type: number
-          description: Current number of people seated at the table.
-          example: 2
-        maxNumOfPeople:
-          type: number
-          description: Maximum capacity of the table.
-          example: 4
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp when the table was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp when the table was last updated.
-    InsertTable:
-      type: object
-      required:
-        - numericalOrder
-        - maxNumOfPeople
-      properties:
-        numericalOrder:
-          type: number
-          description: The table number.
-          example: 5
-        maxNumOfPeople:
-          type: number
-          description: The maximum number of people the table can accommodate.
-          example: 6
-        isAvailable:
-          type: boolean
-          description: 'Whether the table is available (default: true).'
-          example: true
-        currentNumOfPeople:
-          type: number
-          description: 'The current number of people at the table (default: 0)'
-          example: 3
-    UpdateTable:
-      type: object
-      properties:
-        numericalOrder:
-          type: number
-          description: The updated table number.
-          example: 3
-        maxNumOfPeople:
-          type: number
-          description: The updated maximum number of people.
-          example: 5
-        isAvailable:
-          type: boolean
-          description: Updated availability status.
-          example: false
-        currentNumOfPeople:
-          type: number
-          description: Updated current number of people at the table.
-          example: 2
+    delete:
+      summary: Delete all rejected orders
+      description: Remove all rejected orders
+      tags:
+        - Order
+      responses:
+        '200':
+          description: All rejected orders deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'All rejected orders deleted successfully'
+                  status:
+                    type: integer
+                    example: 200
+  /order/{billId}/{orderId}/reorder:
+    patch:
+      summary: Reorder a rejected order
+      description: Reorder an order that was previously rejected
+      tags:
+        - Order
+      parameters:
+        - name: billId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      food:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: '67c1c58322cabb5605f05ba0'
+                          price:
+                            type: number
+                            example: 12.99
+                      tableId:
+                        type: string
+                        example: '67bc37f21576d17f62cf49bb'
+                      quantity:
+                        type: integer
+                        example: 2
+                voucher:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: 'DISCOUNT10'
+                message:
+                  type: string
+                  example: 'Please serve quickly'
+      responses:
+        '200':
+          description: Order reordered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Order reordered successfully'
+                  status:
+                    type: integer
+                    example: 200
+  /order/{orderId}/status:
+    post:
+      summary: Update order status
+      description: Change the status of an order
+      tags:
+        - Order
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: ['ORDERED', 'PREPARING', 'COMPLETED', 'CANCELLED']
+                  example: 'PREPARING'
+      responses:
+        '200':
+          description: Order status updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Updated status'
+                  status:
+                    type: integer
+                    example: 200
+  /order/bill/{billId}/order/{orderId}:
+    patch:
+      summary: Update an order
+      description: Modify an existing order
+      tags:
+        - Order
+      parameters:
+        - name: billId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      food:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: '67c1c58322cabb5605f05ba0'
+                          price:
+                            type: number
+                            example: 12.99
+                      quantity:
+                        type: integer
+                        example: 2
+                      tableId:
+                        type: string
+                        example: '67bc37f21576d17f62cf49bb'
+                message:
+                  type: string
+                  example: 'Please serve quickly'
+      responses:
+        '200':
+          description: Order updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Order updated'
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      newBill:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: '67d53885c92203568eb709b1'
+                          totalPrice:
+                            type: number
+                            example: 25.98
+                      newOrder:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: '67d53885c92203568eb709ac'
+                          items:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                foodId:
+                                  type: string
+                                  example: '67c1c58322cabb5605f05ba0'
+                                price:
+                                  type: number
+                                  example: 12.99
+                                quantity:
+                                  type: integer
+                                  example: 2
+                          messages:
+                            type: array
+                            items:
+                              type: string
+                            example: ['Please serve quickly']
+
+  /bill:
+    get:
+      summary: Get all bills
+      description: Retrieve a list of all bills in the system.
+      operationId: getBills
+      tags:
+        - Bill
+      responses:
+        '200':
+          description: A list of bills.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Bills found'
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: '67d53885c92203568eb709b1'
+                        totalPrice:
+                          type: number
+                          example: 25.98
+                        orderId:
+                          type: string
+                          example: '67d53885c92203568eb709ac'
+                        isPaid:
+                          type: boolean
+                          example: false
+                        voucherId:
+                          type: string
+                          example: '67bebd626e1de48060da6adb'
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: '2025-03-15T08:21:25.638Z'
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: '2025-03-15T08:21:25.638Z'
+
+    delete:
+      summary: Delete all bills
+      description: Remove all bills from the system.
+      operationId: deleteAllBills
+      tags:
+        - Bill
+      responses:
+        '200':
+          description: Confirmation of deletion.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'All bills deleted'
+                  status:
+                    type: integer
+                    example: 200
+  /voucher:
+    post:
+      summary: Create a new voucher
+      description: Inserts a new voucher into the system.
+      tags:
+        - Voucher
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Holiday Discount'
+                description:
+                  type: string
+                  example: '10% off for holiday purchases'
+                type:
+                  type: string
+                  enum: [FIXED_AMOUNT, PERCENTAGE]
+                  example: 'PERCENTAGE'
+                code:
+                  type: string
+                  example: 'HOLIDAY10'
+                value:
+                  type: number
+                  example: 10
+                startDate:
+                  type: string
+                  format: date-time
+                  example: '2025-01-01T00:00:00Z'
+                endDate:
+                  type: string
+                  format: date-time
+                  example: '2025-12-31T23:59:59Z'
+                maxUsage:
+                  type: integer
+                  example: 100
+                usageCount:
+                  type: integer
+                  example: 0
+                maxUsuagePerUser:
+                  type: integer
+                  example: 1
+                isActive:
+                  type: boolean
+                  example: true
+      responses:
+        201:
+          description: Voucher created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Voucher created successfully'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: '64b5d7a4f7e2a1c7b1d5f6a2'
+                      name:
+                        type: string
+                        example: 'Holiday Discount'
+                      code:
+                        type: string
+                        example: 'HOLIDAY10'
+                      value:
+                        type: number
+                        example: 10
+                      isActive:
+                        type: boolean
+                        example: true
+
+    get:
+      summary: Get all vouchers
+      description: Retrieves a list of all vouchers available in the system.
+      tags:
+        - Voucher
+      responses:
+        200:
+          description: A list of vouchers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Get voucher successfully!'
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '64b5d7a4f7e2a1c7b1d5f6a2'
+                        name:
+                          type: string
+                          example: 'Holiday Discount'
+                        code:
+                          type: string
+                          example: 'HOLIDAY10'
+                        value:
+                          type: number
+                          example: 10
+                        isActive:
+                          type: boolean
+                          example: true
