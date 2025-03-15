@@ -42,6 +42,11 @@ router.patch(
   asyncHandler(orderController.updateOrder),
 );
 
+router.patch(
+  '/bill/:billId/order/:orderId/payment',
+  asyncHandler(orderController.CompleteOrder),
+);
+
 router.get('/', asyncHandler(orderController.get));
 
 router.delete('/', asyncHandler(orderController.delete));

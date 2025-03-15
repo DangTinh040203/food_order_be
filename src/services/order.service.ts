@@ -1,4 +1,4 @@
-import { type ORDER_STATUS } from '@/constants';
+import { ORDER_STATUS } from '@/constants';
 import { SOCKET_ACTIONS } from '@/constants/socket';
 import { BadRequestError, InternalServerError } from '@/core/error.response';
 import { CreatedResponse, OkResponse } from '@/core/success.response';
@@ -241,7 +241,7 @@ class OrderService {
             price: item.food.price,
             quantity: item.quantity,
           })),
-
+          status: ORDER_STATUS.ORDERED,
           $push: {
             messages: message,
           },
@@ -257,6 +257,30 @@ class OrderService {
     } catch (error) {
       throw new InternalServerError(`Something went wrong`);
     }
+  }
+
+  async CompleteOrder(billId: string, orderId: string) {
+    await Promise.all([
+      billModel.findOneAndUpdate(
+        { _id: billId },
+        { isPaid: true },
+        { new: true },
+      ),
+      orderModel.findOneAndUpdate(
+        { _id: orderId },
+        { status: ORDER_STATUS.DONE },
+        { new: true },
+      ),
+    ]);
+
+    const tableId = ((await orderModel.findOne({ _id: orderId })) as Order)
+      .tableId;
+    await tableModel.findOneAndUpdate(
+      { _id: tableId },
+      { isAvailable: true },
+      { new: true },
+    );
+    return new OkResponse('Order completed');
   }
 }
 
