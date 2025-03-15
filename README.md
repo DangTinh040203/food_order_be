@@ -38,8 +38,12 @@ pnpm run dev
 ### Running with Docker
 
 ```sh
-docker compose --profile dev up
+docker compose --profile dev up -d
 ```
+
+## API Documents
+
+- **API Docs**: [Swagger](http://localhost:3000/swagger/api-docs)
 
 ## Overview
 
@@ -83,6 +87,14 @@ This project is a modern web application utilizing a **Next.js frontend** deploy
 - **Email Service**: SendGrid for email notifications
 - **WebSockets**: Socket.io for real-time communication
 
+## Deployment & CI/CD
+
+- The project follows a CI/CD workflow:
+  1. **Frontend** is deployed via **Vercel**.
+  2. **Backend** is deployed via **AWS EC2** with **Dockerized images** stored in **AWS ECR**.
+  3. **Jenkins** triggers webhooks and rebuilds the backend container upon updates.
+  4. **GitHub Actions** ensures version control and automated builds.
+
 ## Folder Structure
 
 ```
@@ -125,11 +137,3 @@ BE/
 |-- tsconfig.json
 |-- tsconfig.prod.json
 ```
-
-## Deployment & CI/CD
-
-- The project follows a CI/CD workflow:
-  1. **Frontend** is deployed via **Vercel**.
-  2. **Backend** is deployed via **AWS EC2** with **Dockerized images** stored in **AWS ECR**.
-  3. **Jenkins** triggers webhooks and rebuilds the backend container upon updates.
-  4. **GitHub Actions** ensures version control and automated builds.
