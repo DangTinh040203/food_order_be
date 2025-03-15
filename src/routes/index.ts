@@ -16,6 +16,6 @@ router.use('/table', tableRoute);
 router.use('/voucher', voucherRoute);
 router.use('/test', testRoute);
 router.use('/bill', billRoute);
-router.use('/', swaggerRouter);
+router.use('/swagger', swaggerRouter);
 
 export default router;

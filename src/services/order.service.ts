@@ -1,4 +1,4 @@
-import { ORDER_STATUS } from '@/constants';
+import { type ORDER_STATUS } from '@/constants';
 import { SOCKET_ACTIONS } from '@/constants/socket';
 import { BadRequestError, InternalServerError } from '@/core/error.response';
 import { CreatedResponse, OkResponse } from '@/core/success.response';
@@ -242,6 +242,7 @@ class OrderService {
             quantity: item.quantity,
           })),
           status: ORDER_STATUS.ORDERED,
+
           $push: {
             messages: message,
           },

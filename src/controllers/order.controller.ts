@@ -74,6 +74,7 @@ class OrderController {
   async CompleteOrder(req: Request, res: Response) {
     const { billId, orderId } = req.params;
     res.send(await orderService.CompleteOrder(billId, orderId));
+
   }
 }
 

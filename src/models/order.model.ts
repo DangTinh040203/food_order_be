@@ -41,6 +41,7 @@ const orderSchema = new mongoose.Schema(
         ORDER_STATUS.ACCEPTED,
         ORDER_STATUS.REJECTED,
         ORDER_STATUS.DONE,
+
       ],
       default: ORDER_STATUS.ORDERED,
     },
