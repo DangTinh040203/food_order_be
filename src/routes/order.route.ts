@@ -35,7 +35,6 @@ router.post(
   asyncHandler(orderController.updateStatus),
 );
 
-
 router.patch(
   '/bill/:billId/order/:orderId',
   validationRequest(OrderValidation.updateOrderSchema()),
