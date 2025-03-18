@@ -29,7 +29,6 @@ class OrderService {
     await tableModel.updateMany({}, { isAvailable: true });
     return new OkResponse('All orders deleted');
   }
-
   async insertOrder(payload: {
     items: Array<{
       food: Food;
@@ -245,7 +244,6 @@ class OrderService {
   async updateOrder(
     billId: string,
     orderId: string,
-
     payload: {
       items: Array<{
         food: Food;
@@ -261,7 +259,6 @@ class OrderService {
       if (items.length === 0) {
         throw new BadRequestError('No items to order');
       }
-
       const order = (await orderModel.findOne({ _id: orderId })) as Order;
 
       await orderModel.findOneAndUpdate(
@@ -283,7 +280,6 @@ class OrderService {
             quantity: item.quantity,
           })),
           status: ORDER_STATUS.ORDERED,
-
           $push: {
             messages: message,
           },

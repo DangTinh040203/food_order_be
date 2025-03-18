@@ -33,7 +33,6 @@ export class OrderValidation {
           })
           .optional()
           .transform((val) => val ?? null),
-
         message: z.string().optional().or(z.literal('')),
       }),
     };
