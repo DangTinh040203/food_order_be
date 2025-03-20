@@ -1160,6 +1160,57 @@ paths:
                             items:
                               type: string
                             example: ['Please serve quickly']
+  /order/bill/{billId}/order/{orderId}/payment:
+    patch:
+      summary: Complete an order payment
+      description: Mark an order as completed and set the corresponding table as available.
+      tags:
+        - Order
+      parameters:
+        - name: billId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the bill to be marked as paid.
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the order to be marked as completed.
+      responses:
+        '200':
+          description: Order marked as completed and table set as available.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Order completed
+        '400':
+          description: Bad request, order or bill not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Order or Bill not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Something went wrong!
+
 
   /bill:
     get:

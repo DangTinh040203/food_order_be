@@ -13,7 +13,6 @@ interface OrderInsertRequest {
   voucher: {
     code: string;
   };
-
   message: string;
 }
 
@@ -66,9 +65,14 @@ class OrderController {
 
   async updateOrder(req: Request, res: Response) {
     const { billId, orderId } = req.params;
-
     const payload: OrderUpdateRequest = req.body;
     res.send(await orderService.updateOrder(billId, orderId, payload));
+  }
+
+  async CompleteOrder(req: Request, res: Response) {
+    const { billId, orderId } = req.params;
+    res.send(await orderService.CompleteOrder(billId, orderId));
+
   }
 }
 

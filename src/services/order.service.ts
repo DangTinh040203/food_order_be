@@ -1,22 +1,27 @@
-import { type ORDER_STATUS } from '@/constants';
+import { ORDER_STATUS } from '@/constants';
 import { SOCKET_ACTIONS } from '@/constants/socket';
-import { BadRequestError, InternalServerError } from '@/core/error.response';
+import {
+  BadRequestError,
+  ErrorResponse,
+  InternalServerError,
+} from '@/core/error.response';
 import { CreatedResponse, OkResponse } from '@/core/success.response';
 import billModel, { type Bill } from '@/models/bill.model';
 import { type Food } from '@/models/food.model';
 import orderModel, { type Order } from '@/models/order.model';
+import orderTempModel, { type OrderTemp } from '@/models/orderTemp.model';
 import rejectedOrderModel from '@/models/rejected-order.model';
 import tableModel from '@/models/table.model';
 import voucherModel from '@/models/voucher.model';
 import SocketInstance from '@/services/socket.instance';
-import { convertObjectId } from '@/utils/convertObjectId';
 
 class OrderService {
   async get() {
     const orders = await orderModel.find();
     const bills = await billModel.find();
+    const ordersTemp = await orderTempModel.find();
     return orders
-      ? new OkResponse('Orders found', { bills, orders })
+      ? new OkResponse('Orders found', { bills, orders, ordersTemp })
       : new OkResponse('No orders found');
   }
   async delete() {
@@ -24,7 +29,6 @@ class OrderService {
     await tableModel.updateMany({}, { isAvailable: true });
     return new OkResponse('All orders deleted');
   }
-
   async insertOrder(payload: {
     items: Array<{
       food: Food;
@@ -45,12 +49,6 @@ class OrderService {
       const [newOrder] = await Promise.all([
         orderModel.create({
           tableId: items[0].tableId,
-          items: items.map((item) => ({
-            foodId: item.food._id,
-            price: item.food.price,
-            quantity: item.quantity,
-          })),
-          messages: message,
         }),
         tableModel.findOneAndUpdate(
           { _id: items[0].tableId },
@@ -59,10 +57,17 @@ class OrderService {
         ),
       ]);
 
-      const billPrice = items.reduce(
-        (acc, item) => acc + item.food.price * item.quantity,
-        0,
-      );
+      const newOrderTemp = await orderTempModel.create({
+        orderId: newOrder._id,
+        items: items.map((item) => ({
+          foodId: item.food._id,
+          price: item.food.price,
+          quantity: item.quantity,
+        })),
+        messages: message,
+      });
+
+      console.log('newOrderTemp', newOrderTemp);
 
       const voucherId =
         voucher && voucher.code
@@ -72,16 +77,22 @@ class OrderService {
           : null;
 
       const newBill = await billModel.create({
-        totalPrice: billPrice,
+        totalPrice: 0,
         orderId: newOrder._id,
         voucherId: voucherId ? voucherId._id : null,
       });
 
       const io = SocketInstance.getIO();
-      io.emit(SOCKET_ACTIONS.INSERT_ORDER, { bill: newBill, order: newOrder });
+      io.emit(SOCKET_ACTIONS.INSERT_ORDER, {
+        bill: newBill,
+        order: newOrder,
+        newOrderTemp: newOrderTemp,
+      });
+
       return new CreatedResponse('Order successful!', {
         bill: newBill,
         order: newOrder,
+        newOrderTemp: newOrderTemp,
       });
     } catch (error) {
       throw new InternalServerError('Soemthing went wrong');
@@ -136,19 +147,13 @@ class OrderService {
       throw new BadRequestError('No items to reorder');
     }
 
-    const totalPrice = items.reduce(
-      (sum, item) => sum + item.food.price * item.quantity,
-      0,
-    );
-
     const updatedBill = await billModel.findOneAndUpdate(
       { _id: billId },
-      { totalPrice },
       { new: true },
     );
 
-    const updatedOrder = await orderModel.findOneAndUpdate(
-      { _id: orderId },
+    const updatedOrder = await orderTempModel.findOneAndUpdate(
+      { orderId: orderId },
       {
         items: items.map((item) => ({
           foodId: item.food._id,
@@ -160,9 +165,9 @@ class OrderService {
       { new: true },
     );
 
-    if (!updatedBill || !updatedOrder) {
-      throw new BadRequestError('Order or bill not found');
-    }
+    // if (!updatedBill || !updatedOrder) {
+    //   throw new BadRequestError('Order or bill not found');
+    // }
 
     await rejectedOrderModel.findOneAndDelete({ orderId });
 
@@ -173,14 +178,72 @@ class OrderService {
   }
 
   async updateStatus(orderId: string, status: ORDER_STATUS) {
-    await orderModel.findOneAndUpdate({ _id: orderId }, { status: status });
-    return new OkResponse('Updated status');
+    const orderedItem = (await orderTempModel.findOne({
+      orderId,
+    })) as OrderTemp;
+
+    if (orderedItem) {
+      const order = await orderModel.findOne({ _id: orderId });
+
+      if (order) {
+        await Promise.all(
+          orderedItem.items.map(async (newItem) => {
+            const existingItem = order.items.find((item) => {
+              return item.foodId.toString() === newItem.foodId.toString();
+            });
+
+            console.log('existingItem', existingItem);
+
+            if (existingItem) {
+              await orderModel.updateOne(
+                { _id: orderId, 'items.foodId': newItem.foodId },
+                { $inc: { 'items.$.quantity': newItem.quantity } },
+              );
+            } else {
+              await orderModel.updateOne(
+                { _id: orderId },
+                { $push: { items: newItem } },
+              );
+            }
+          }),
+        );
+
+        await orderModel.updateOne(
+          { _id: orderId },
+          { $set: { status: status } },
+        );
+      } else {
+        await orderModel.create({
+          _id: orderId,
+          items: orderedItem.items,
+          status,
+        });
+      }
+
+      const items = (await orderModel.findOne({ _id: orderId })) as Order;
+
+      const billPrice = items.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0,
+      );
+
+      await billModel.findOneAndUpdate(
+        { orderId },
+        { totalPrice: billPrice },
+        { upsert: true },
+      );
+
+      await orderTempModel.findOneAndDelete({ orderId });
+
+      return new OkResponse('Updated status');
+    }
+
+    return new BadRequestError('Order not found');
   }
 
   async updateOrder(
     billId: string,
     orderId: string,
-
     payload: {
       items: Array<{
         food: Food;
@@ -196,67 +259,63 @@ class OrderService {
       if (items.length === 0) {
         throw new BadRequestError('No items to order');
       }
-
-      //check quantity current if less than old quantity ordered before then throw error
       const order = (await orderModel.findOne({ _id: orderId })) as Order;
-      const oldQuantityItems = order.items.map((item) => {
-        return {
-          foodId: item.foodId,
-          quantity: item.quantity,
-        };
-      });
-      const isLessQuantity = items.some((item) => {
-        const oldQuantityItem = oldQuantityItems.find((oldItem) => {
-          return oldItem.foodId.toString() === item.food._id.toString();
-        });
-        return oldQuantityItem && oldQuantityItem.quantity > item.quantity;
-      });
 
-      if (isLessQuantity) {
-        throw new BadRequestError('Cannot reduce quantity');
-      }
-
-      const priceForNewFoods = items.reduce((sum, item) => {
-        return sum + item.food.price * item.quantity;
-      }, 0);
-
-      //Adding message to bill
-      const newBill = await billModel.findOneAndUpdate(
-        { _id: billId },
+      await orderModel.findOneAndUpdate(
+        { _id: orderId },
         {
-          $set: {
-            totalPrice: priceForNewFoods,
-          },
+          status: ORDER_STATUS.ORDERED,
         },
         { new: true },
       );
 
-      const newOrder = await orderModel.findOneAndUpdate(
-        {
-          _id: orderId,
-        },
+      const newBill = await billModel.findOne({ _id: billId });
+
+      const newOrderTemp = await orderTempModel.findOneAndUpdate(
+        { orderId: orderId },
         {
           items: items.map((item) => ({
             foodId: item.food._id,
             price: item.food.price,
             quantity: item.quantity,
           })),
-
+          status: ORDER_STATUS.ORDERED,
           $push: {
             messages: message,
           },
         },
-        { new: true },
+        { new: true, upsert: true },
       );
 
-      if (newBill == null || newOrder == null) {
-        throw new BadRequestError('Order not found');
-      }
-
-      return new OkResponse('Order updated', { newBill, newOrder });
+      return new OkResponse('Order updated', { newBill, newOrderTemp });
     } catch (error) {
       throw new InternalServerError(`Something went wrong`);
     }
+  }
+
+  async CompleteOrder(billId: string, orderId: string) {
+    await Promise.all([
+      billModel.findOneAndUpdate(
+        { _id: billId },
+        { isPaid: true },
+        { new: true },
+      ),
+      orderModel.findOneAndUpdate(
+        { _id: orderId },
+        { status: ORDER_STATUS.DONE },
+        { new: true },
+      ),
+    ]);
+
+    const tableId = ((await orderModel.findOne({ _id: orderId })) as Order)
+      .tableId;
+
+    await tableModel.findOneAndUpdate(
+      { _id: tableId },
+      { isAvailable: true },
+      { new: true },
+    );
+    return new OkResponse('Order completed');
   }
 }
 

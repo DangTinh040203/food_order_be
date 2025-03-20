@@ -7,14 +7,14 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { ORDER_STATUS } from '@/constants';
 
-export const DOCUMENT_NAME = 'Order';
-export const COLLECTION_NAME = 'Orders';
+export const DOCUMENT_NAME = 'OrderTemp';
+export const COLLECTION_NAME = 'OrdersTemp';
 
-const orderSchema = new mongoose.Schema(
+const orderTempSchema = new mongoose.Schema(
   {
-    tableId: {
+    orderId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Table',
+      ref: 'Order',
       required: true,
     },
     items: [
@@ -41,7 +41,6 @@ const orderSchema = new mongoose.Schema(
         ORDER_STATUS.ACCEPTED,
         ORDER_STATUS.REJECTED,
         ORDER_STATUS.DONE,
-
       ],
       default: ORDER_STATUS.ORDERED,
     },
@@ -61,15 +60,15 @@ const orderSchema = new mongoose.Schema(
   },
 );
 
-orderSchema.plugin(mongoosePaginate);
+orderTempSchema.plugin(mongoosePaginate);
 
-export type Order = InferSchemaType<typeof orderSchema> & {
+export type OrderTemp = InferSchemaType<typeof orderTempSchema> & {
   _id: mongoose.Types.ObjectId;
 };
 
-const orderModel = model<Order, PaginateModel<Order>>(
+const orderTempModel = model<OrderTemp, PaginateModel<OrderTemp>>(
   DOCUMENT_NAME,
-  orderSchema,
+  orderTempSchema,
 );
 
-export default orderModel;
+export default orderTempModel;

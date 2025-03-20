@@ -35,11 +35,15 @@ router.post(
   asyncHandler(orderController.updateStatus),
 );
 
-
 router.patch(
   '/bill/:billId/order/:orderId',
   validationRequest(OrderValidation.updateOrderSchema()),
   asyncHandler(orderController.updateOrder),
+);
+
+router.patch(
+  '/bill/:billId/order/:orderId/payment',
+  asyncHandler(orderController.CompleteOrder),
 );
 
 router.get('/', asyncHandler(orderController.get));
