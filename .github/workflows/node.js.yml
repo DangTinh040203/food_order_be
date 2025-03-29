@@ -56,6 +56,9 @@ jobs:
       - name: Check Build
         run: pnpm run build
 
+      - name: Restore .env file
+        run: cp ~/env-backup/food_order_be.env .env
+
       - name: Restart Application
         run: |
           export NVM_DIR="$HOME/.nvm"
