@@ -35,6 +35,15 @@ const tableSchema = new mongoose.Schema(
 
 tableSchema.plugin(mongoosePaginate);
 
+tableSchema.pre("validate", async function (next) {
+  if (this.isNew) {
+    const lastTable = await tableModel.findOne().sort({ numericalOrder: -1 });
+    this.numericalOrder = lastTable ? lastTable.numericalOrder + 1 : 1;
+  }
+  next();
+});
+
+
 export type Table = InferSchemaType<typeof tableSchema> & {
   _id: mongoose.Types.ObjectId;
 };

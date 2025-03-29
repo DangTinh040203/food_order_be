@@ -6,7 +6,6 @@ export class TableValidation {
   static insertTableSchema() {
     return {
       body: z.object({
-        numericalOrder: z.number().positive(),
         isAvailable: z.boolean().optional(),
         currentNumOfPeople: z.number().positive().optional(),
         maxNumOfPeople: z.number().positive(),
