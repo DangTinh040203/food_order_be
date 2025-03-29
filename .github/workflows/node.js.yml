@@ -58,6 +58,11 @@ jobs:
 
       - name: Restart Application
         run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+          export PATH=/home/ubuntu/.nvm/versions/node/v20.19.0/bin:$PATH
+
           pm2 stop food_order_be || true
           pm2 start ~/actions-runner/_work/food_order_be/food_order_be/dist/src/server.js --name food_order_be
           pm2 save
