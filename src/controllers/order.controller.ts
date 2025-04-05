@@ -29,9 +29,16 @@ class OrderController {
   async get(req: Request, res: Response) {
     res.send(await orderService.get());
   }
+
+  async getOrderById(req: Request, res: Response) {
+    const orderId = req.params.orderId;
+    res.send(await orderService.getOrderById(orderId));
+  }
+
   async delete(req: Request, res: Response) {
     res.send(await orderService.delete());
   }
+
   async insertOrder(req: Request, res: Response) {
     const payload: OrderInsertRequest = req.body;
     res.send(await orderService.insertOrder(payload));
@@ -72,7 +79,6 @@ class OrderController {
   async CompleteOrder(req: Request, res: Response) {
     const { billId, orderId } = req.params;
     res.send(await orderService.CompleteOrder(billId, orderId));
-
   }
 }
 

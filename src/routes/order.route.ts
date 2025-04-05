@@ -8,12 +8,6 @@ import { OrderValidation } from '@/validations/order.validation';
 const router = express.Router();
 
 router.post(
-  '/',
-  validationRequest(OrderValidation.insertOrderSchema()),
-  asyncHandler(orderController.insertOrder),
-);
-
-router.post(
   '/:orderId/reject',
   validationRequest(OrderValidation.rejectOrderSchema()),
   asyncHandler(orderController.rejectOrder),
@@ -44,6 +38,18 @@ router.patch(
 router.patch(
   '/bill/:billId/order/:orderId/payment',
   asyncHandler(orderController.CompleteOrder),
+);
+
+router.get(
+  '/:orderId',
+  validationRequest(OrderValidation.getOrderById()),
+  asyncHandler(orderController.getOrderById),
+);
+
+router.post(
+  '/',
+  validationRequest(OrderValidation.insertOrderSchema()),
+  asyncHandler(orderController.insertOrder),
 );
 
 router.get('/', asyncHandler(orderController.get));

@@ -293,6 +293,14 @@ class OrderService {
     }
   }
 
+  async getOrderById(orderId: string) {
+    const data = await orderModel.findById(orderId);
+    if (!data) {
+      throw new BadRequestError('Order not found');
+    }
+    return new OkResponse('Order found', { data });
+  }
+
   async CompleteOrder(billId: string, orderId: string) {
     await Promise.all([
       billModel.findOneAndUpdate(
