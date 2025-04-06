@@ -56,12 +56,16 @@ jobs:
       - name: Check Build
         run: pnpm run build
 
-      - name: Check and Start PM2 Process
+      - name: Restore .env file
+        run: cp ~/env-backup/food_order_be.env .env
+
+      - name: Restart Application
         run: |
-          if pm2 list | grep -q food-order-be; then
-            echo "Restarting existing PM2 process..."
-            pm2 restart food-order-be
-          else
-            echo "Starting new PM2 process..."
-            pm2 start dist/src/server.js --name food-order-be
-          fi
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+          export PATH=/home/ubuntu/.nvm/versions/node/v20.19.0/bin:$PATH
+
+          pm2 stop food_order_be || true
+          NODE_ENV=prod pm2 start ~/actions-runner/_work/food_order_be/food_order_be/dist/src/server.js --name food_order_be --update-env
+          pm2 save

@@ -6,6 +6,7 @@ info:
 servers:
   - url: http://localhost:3000
 paths:
+  # FOOD ENDPOINTS
   /food:
     get:
       summary: Get a list of foods with pagination
@@ -374,38 +375,6 @@ paths:
                   message:
                     type: string
                     example: 'Food deleted successfully'
-  /food/{id}/availability:
-    patch:
-      summary: Update food availability
-      description: Update the availability status of a food item.
-      tags:
-        - Food
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                isAvailable:
-                  type: boolean
-      responses:
-        '200':
-          description: Availability updated successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Availability updated'
   /food/thumbnail:
     post:
       summary: Upload a food thumbnail
@@ -550,18 +519,6 @@ paths:
             schema:
               type: object
               properties:
-                numericalOrder:
-                  type: integer
-                  example: 5
-                  description: The numerical order of the table.
-                isAvailable:
-                  type: boolean
-                  example: true
-                  description: Indicates if the table is available.
-                currentNumOfPeople:
-                  type: integer
-                  example: 3
-                  description: The current number of people seated at the table.
                 maxNumOfPeople:
                   type: integer
                   example: 6
@@ -1317,6 +1274,7 @@ paths:
                               type: string
                             example: ['Please serve quickly']
   /order/{orderId}/{billId}/payment:
+
     patch:
       summary: Complete an order payment
       description: Mark an order as completed and set the corresponding table as available.

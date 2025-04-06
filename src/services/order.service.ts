@@ -69,6 +69,7 @@ class OrderService {
     );
     return new OkResponse('order deleted');
   }
+
   async insertOrder(payload: {
     items: Array<{
       food: Food;
@@ -163,55 +164,6 @@ class OrderService {
     await rejectedOrderModel.deleteMany();
     return new OkResponse('All rejected orders deleted');
   }
-
-  // async reOrder(
-  //   billId: string,
-  //   orderId: string,
-  //   payload: {
-  //     items: Array<{
-  //       food: Food;
-  //       quantity: number;
-  //       tableId: string;
-  //     }>;
-  //     message: string;
-  //   },
-  // ) {
-  //   const { items, message } = payload;
-
-  //   const rejectedOrder = await rejectedOrderModel.findOne({ orderId });
-  //   if (!rejectedOrder) {
-  //     throw new BadRequestError('Rejected order not found');
-  //   }
-
-  //   if (items.length === 0) {
-  //     throw new BadRequestError('No items to reorder');
-  //   }
-
-  //   const updatedBill = await billModel.findOneAndUpdate(
-  //     { _id: billId },
-  //     { new: true },
-  //   );
-
-  //   const updatedOrder = await orderTempModel.findOneAndUpdate(
-  //     { orderId: orderId },
-  //     {
-  //       items: items.map((item) => ({
-  //         foodId: item.food._id,
-  //         price: item.food.price,
-  //         quantity: item.quantity,
-  //       })),
-  //       $push: { messages: message },
-  //     },
-  //     { new: true },
-  //   );
-
-  //   await rejectedOrderModel.findOneAndDelete({ orderId });
-
-  //   return new OkResponse('Order has been successfully reordered', {
-  //     updatedBill,
-  //     updatedOrder,
-  //   });
-  // }
 
   async updateStatus(orderId: string, status: ORDER_STATUS) {
     const orderedItem = (await orderTempModel.findOne({
