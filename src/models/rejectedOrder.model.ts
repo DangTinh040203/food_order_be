@@ -19,11 +19,6 @@ const rejectedOrderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // rejectedBy: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: 'Staff',
-    //   required: true,
-    // },
   },
   {
     timestamps: true,

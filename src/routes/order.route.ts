@@ -7,53 +7,33 @@ import { OrderValidation } from '@/validations/order.validation';
 
 const router = express.Router();
 
-router.post(
-  '/:orderId/reject',
-  validationRequest(OrderValidation.rejectOrderSchema()),
-  asyncHandler(orderController.rejectOrder),
-);
-
-router.get('/reject', asyncHandler(orderController.getRejectedOrder));
-
-router.delete('/reject', asyncHandler(orderController.deleteRejectedOrder));
-
-router.patch(
-  '/:billId/:orderId/reorder',
-  validationRequest(OrderValidation.updateOrderSchema()),
-  asyncHandler(orderController.reOrder),
-);
-
-router.post(
-  '/:orderId/status',
-  validationRequest(OrderValidation.acceptOrderSchema()),
-  asyncHandler(orderController.updateStatus),
-);
-
-router.patch(
-  '/bill/:billId/order/:orderId',
-  validationRequest(OrderValidation.updateOrderSchema()),
-  asyncHandler(orderController.updateOrder),
-);
-
-router.patch(
-  '/bill/:billId/order/:orderId/payment',
-  asyncHandler(orderController.CompleteOrder),
-);
-
-router.get(
-  '/:orderId',
-  validationRequest(OrderValidation.getOrderById()),
-  asyncHandler(orderController.getOrderById),
-);
-
+router.get('/', asyncHandler(orderController.get));
+router.get('/:id', asyncHandler(orderController.getOrderById));
 router.post(
   '/',
   validationRequest(OrderValidation.insertOrderSchema()),
   asyncHandler(orderController.insertOrder),
 );
-
-router.get('/', asyncHandler(orderController.get));
-
-router.delete('/', asyncHandler(orderController.delete));
+router.post(
+  '/:orderId',
+  validationRequest(OrderValidation.rejectOrderSchema()),
+  asyncHandler(orderController.rejectOrder),
+);
+router.delete('/reject', asyncHandler(orderController.deleteRejectedOrder));
+router.post(
+  '/:orderId/status',
+  validationRequest(OrderValidation.acceptOrderSchema()),
+  asyncHandler(orderController.updateStatus),
+);
+router.patch(
+  '/:orderId/:billId/',
+  validationRequest(OrderValidation.updateOrderSchema()),
+  asyncHandler(orderController.updateOrder),
+);
+router.patch(
+  '/:orderId/:billId/payment',
+  asyncHandler(orderController.CompleteOrder),
+);
+router.delete('/:id', asyncHandler(orderController.deleteById));
 
 export default router;

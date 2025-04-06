@@ -9,6 +9,7 @@ import { FoodValidation } from '@/validations/food.validation';
 const router = express.Router();
 
 router.get('/', asyncHandler(foodController.get));
+router.get('/:id', asyncHandler(foodController.getById));
 
 router.patch(
   '/:id',

@@ -46,16 +46,6 @@ export class OrderValidation {
     };
   }
 
-  static getOrderById() {
-    return {
-      params: z.object({
-        orderId: z.string().nonempty().refine(isValidObjectId, {
-          message: 'Invalid ObjectId format',
-        }),
-      }),
-    };
-  }
-
   static acceptOrderSchema() {
     return {
       params: z.object({

@@ -10,25 +10,66 @@ import billModel, { type Bill } from '@/models/bill.model';
 import { type Food } from '@/models/food.model';
 import orderModel, { type Order } from '@/models/order.model';
 import orderTempModel, { type OrderTemp } from '@/models/orderTemp.model';
-import rejectedOrderModel from '@/models/rejected-order.model';
+import rejectedOrderModel from '@/models/rejectedOrder.model';
 import tableModel from '@/models/table.model';
 import voucherModel from '@/models/voucher.model';
 import SocketInstance from '@/services/socket.instance';
+import { convertObjectId } from '@/utils/convertObjectId';
 
 class OrderService {
   async get() {
     const orders = await orderModel.find();
     const bills = await billModel.find();
     const ordersTemp = await orderTempModel.find();
+    const rejectedOrders = await rejectedOrderModel.find();
     return orders
-      ? new OkResponse('Orders found', { bills, orders, ordersTemp })
+      ? new OkResponse('Orders found', {
+          bills,
+          orders,
+          ordersTemp,
+          rejectedOrders,
+        })
       : new OkResponse('No orders found');
   }
-  async delete() {
-    await orderModel.deleteMany();
-    await tableModel.updateMany({}, { isAvailable: true });
-    return new OkResponse('All orders deleted');
+
+  async getById(orderId: string) {
+    const order = await orderModel.findById({
+      _id: convertObjectId(orderId),
+    });
+    if (!order) {
+      throw new BadRequestError('Order not found');
+    }
+
+    const rejectedOrder = await rejectedOrderModel.findOne({
+      orderId: convertObjectId(orderId),
+    });
+
+    if (rejectedOrder) {
+      return new OkResponse('Order found', {
+        order,
+        rejected: rejectedOrder,
+      });
+    }
+
+    return new OkResponse('Order found', order);
   }
+
+  async deleteById({ orderId }: { orderId: string }) {
+    const tableId = (await orderModel.findById({
+      _id: convertObjectId(orderId),
+    })) as Order;
+    if (!tableId) {
+      throw new BadRequestError('Order not found');
+    }
+    await orderModel.findByIdAndDelete(orderId);
+    await tableModel.findByIdAndUpdate(
+      { _id: tableId.tableId },
+      { isAvailable: true },
+      { new: true },
+    );
+    return new OkResponse('order deleted');
+  }
+
   async insertOrder(payload: {
     items: Array<{
       food: Food;
@@ -124,59 +165,6 @@ class OrderService {
     return new OkResponse('All rejected orders deleted');
   }
 
-  async reOrder(
-    billId: string,
-    orderId: string,
-    payload: {
-      items: Array<{
-        food: Food;
-        quantity: number;
-        tableId: string;
-      }>;
-      message: string;
-    },
-  ) {
-    const { items, message } = payload;
-
-    const rejectedOrder = await rejectedOrderModel.findOne({ orderId });
-    if (!rejectedOrder) {
-      throw new BadRequestError('Rejected order not found');
-    }
-
-    if (items.length === 0) {
-      throw new BadRequestError('No items to reorder');
-    }
-
-    const updatedBill = await billModel.findOneAndUpdate(
-      { _id: billId },
-      { new: true },
-    );
-
-    const updatedOrder = await orderTempModel.findOneAndUpdate(
-      { orderId: orderId },
-      {
-        items: items.map((item) => ({
-          foodId: item.food._id,
-          price: item.food.price,
-          quantity: item.quantity,
-        })),
-        $push: { messages: message },
-      },
-      { new: true },
-    );
-
-    // if (!updatedBill || !updatedOrder) {
-    //   throw new BadRequestError('Order or bill not found');
-    // }
-
-    await rejectedOrderModel.findOneAndDelete({ orderId });
-
-    return new OkResponse('Order has been successfully reordered', {
-      updatedBill,
-      updatedOrder,
-    });
-  }
-
   async updateStatus(orderId: string, status: ORDER_STATUS) {
     const orderedItem = (await orderTempModel.findOne({
       orderId,
@@ -254,12 +242,11 @@ class OrderService {
     },
   ) {
     const { items, message } = payload;
-
+    const rejectedOrder = await rejectedOrderModel.findOne({ orderId });
     try {
       if (items.length === 0) {
         throw new BadRequestError('No items to order');
       }
-      const order = (await orderModel.findOne({ _id: orderId })) as Order;
 
       await orderModel.findOneAndUpdate(
         { _id: orderId },
@@ -287,18 +274,14 @@ class OrderService {
         { new: true, upsert: true },
       );
 
+      if (rejectedOrder) {
+        await rejectedOrderModel.findOneAndDelete({ orderId });
+      }
+
       return new OkResponse('Order updated', { newBill, newOrderTemp });
     } catch (error) {
       throw new InternalServerError(`Something went wrong`);
     }
-  }
-
-  async getOrderById(orderId: string) {
-    const data = await orderModel.findById(orderId);
-    if (!data) {
-      throw new BadRequestError('Order not found');
-    }
-    return new OkResponse('Order found', { data });
   }
 
   async CompleteOrder(billId: string, orderId: string) {

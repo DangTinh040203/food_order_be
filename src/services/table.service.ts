@@ -23,6 +23,12 @@ class TableService {
     return new OkResponse('Tables found successfully', tables);
   }
 
+  async getById(id: Types.ObjectId) {
+    const table = await tableModel.findById(id);
+    if (!table) throw new NotFoundError('Tables not found');
+    return new OkResponse('Tables found successfully', table);
+  }
+
   async insertTable(payload: Omit<Table, 'id'>) {
     const tables = await tableModel.create(payload);
     const io = SocketInstance.getIO();

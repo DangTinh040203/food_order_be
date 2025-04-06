@@ -31,12 +31,13 @@ class OrderController {
   }
 
   async getOrderById(req: Request, res: Response) {
-    const orderId = req.params.orderId;
-    res.send(await orderService.getOrderById(orderId));
+    const orderId = req.params.id;
+    res.send(await orderService.getById(orderId));
   }
 
-  async delete(req: Request, res: Response) {
-    res.send(await orderService.delete());
+  async deleteById(req: Request, res: Response) {
+    const orderId = req.params.id;
+    res.send(await orderService.deleteById({ orderId }));
   }
 
   async insertOrder(req: Request, res: Response) {
@@ -58,22 +59,16 @@ class OrderController {
     res.send(await orderService.deleteRejectedOrder());
   }
 
-  async reOrder(req: Request, res: Response) {
+  async updateOrder(req: Request, res: Response) {
     const { billId, orderId } = req.params;
     const payload: OrderUpdateRequest = req.body;
-    res.send(await orderService.reOrder(billId, orderId, payload));
+    res.send(await orderService.updateOrder(billId, orderId, payload));
   }
 
   async updateStatus(req: Request, res: Response) {
     const orderId = req.params.orderId;
     const { status }: { status: ORDER_STATUS } = req.body;
     res.send(await orderService.updateStatus(orderId, status));
-  }
-
-  async updateOrder(req: Request, res: Response) {
-    const { billId, orderId } = req.params;
-    const payload: OrderUpdateRequest = req.body;
-    res.send(await orderService.updateOrder(billId, orderId, payload));
   }
 
   async CompleteOrder(req: Request, res: Response) {

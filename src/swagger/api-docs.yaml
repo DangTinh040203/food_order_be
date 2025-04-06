@@ -195,6 +195,84 @@ paths:
                         format: date-time
                         example: '2025-03-08T16:51:19.569Z'
   /food/{id}:
+    get:
+      summary: Get details of a food item by ID
+      description: Retrieve detailed information of a food item using its unique ID.
+      tags:
+        - Food
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the food item.
+      responses:
+        '200':
+          description: Successfully retrieved the food item details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Food item retrieved successfully'
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67f20c2057d0f17994571e2a'
+                      name:
+                        type: string
+                        example: 'Chả Giò'
+                      category:
+                        type: string
+                        example: 'FOOD'
+                      description:
+                        type: string
+                        example: 'Chả giò chiên giòn, nhân thịt và miến.'
+                      price:
+                        type: integer
+                        example: 28000
+                      isAvailable:
+                        type: boolean
+                        example: true
+                      thumbnail:
+                        type: string
+                        example: 'https://example.com/goicuon.jpg'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-02-28T14:17:39.693Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-03-08T16:51:19.569Z'
+        '404':
+          description: Food item not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Food item not found'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
     patch:
       summary: Update a food item
       description: Update details of an existing food item.
@@ -486,6 +564,82 @@ paths:
                         type: integer
                         example: 0
   /table/{id}:
+    get:
+      summary: Get details of a table by ID
+      description: Retrieve detailed information of a table using its unique ID.
+      tags:
+        - Table
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the table.
+      responses:
+        '200':
+          description: Successfully retrieved the table details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Table found successfully'
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67f20aaa94cc340a4bad5d3d'
+                      numericalOrder:
+                        type: integer
+                        example: 5
+                      isAvailable:
+                        type: boolean
+                        example: true
+                      currentNumOfPeople:
+                        type: integer
+                        example: 2
+                      maxNumOfPeople:
+                        type: integer
+                        example: 4
+                      __v:
+                        type: integer
+                        example: 0
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-01-10T14:30:00.000Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-03-10T16:30:00.000Z'
+        '404':
+          description: Table not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Table not found'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+
     patch:
       summary: Update a table
       description: Modify details of an existing table.
@@ -723,27 +877,28 @@ paths:
                           properties:
                             _id:
                               type: string
-                              example: '67d53885c92203568eb709b1'
+                              example: '67f20f471bac03bc08b742dd'
                             totalPrice:
                               type: number
-                              example: 25.98
+                              example: 46000
                             orderId:
                               type: string
-                              example: '67d53885c92203568eb709ac'
+                              example: '67f20f471bac03bc08b742d6'
                             isPaid:
                               type: boolean
-                              example: false
+                              example: true
                             voucherId:
                               type: string
-                              example: '67bebd626e1de48060da6adb'
+                              nullable: true
+                              example: null
                             createdAt:
                               type: string
                               format: date-time
-                              example: '2025-03-15T08:21:25.638Z'
+                              example: '2025-04-06T05:21:11.491Z'
                             updatedAt:
                               type: string
                               format: date-time
-                              example: '2025-03-15T08:21:25.638Z'
+                              example: '2025-04-06T05:23:24.466Z'
                             __v:
                               type: integer
                               example: 0
@@ -755,10 +910,18 @@ paths:
                           properties:
                             _id:
                               type: string
-                              example: '67d53885c92203568eb709ac'
+                              example: '67f20c3457d0f17994571e3c'
                             tableId:
                               type: string
-                              example: '67bc37f21576d17f62cf49bb'
+                              example: '67f20aaa94cc340a4bad5d3d'
+                            status:
+                              type: string
+                              example: 'DONE'
+                            messages:
+                              type: array
+                              items:
+                                type: string
+                              example: []
                             items:
                               type: array
                               items:
@@ -766,35 +929,63 @@ paths:
                                 properties:
                                   foodId:
                                     type: string
-                                    example: '67c1c58322cabb5605f05ba0'
+                                    example: '67f20c1557d0f17994571e28'
                                   price:
                                     type: number
-                                    example: 12.99
+                                    example: 48000
                                   quantity:
                                     type: integer
-                                    example: 2
+                                    example: 4
                                   _id:
                                     type: string
-                                    example: '67d53885c92203568eb709ad'
-                            status:
-                              type: string
-                              example: 'ORDERED'
-                            messages:
-                              type: array
-                              items:
-                                type: string
-                              example: ['Please serve quickly']
+                                    example: '67f20d7457d0f1799457202a'
                             createdAt:
                               type: string
                               format: date-time
-                              example: '2025-03-15T08:21:25.626Z'
+                              example: '2025-04-06T05:08:04.588Z'
                             updatedAt:
                               type: string
                               format: date-time
-                              example: '2025-03-15T08:21:25.626Z'
+                              example: '2025-04-06T05:21:00.115Z'
                             __v:
                               type: integer
                               example: 0
+                      ordersTemp:
+                        type: array
+                        description: Temporary orders (currently empty).
+                        items:
+                          type: array
+                          items:
+                            type: object
+                            properties: {}
+                      rejectedOrders:
+                        type: array
+                        description: List of rejected orders (currently empty).
+                        items:
+                          type: array
+                          items:
+                            type: object
+                            properties: {}
+        '404':
+          description: Orders not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Orders not found'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
     delete:
       summary: Delete all orders
       description: Remove all orders and mark tables as available
@@ -814,31 +1005,22 @@ paths:
                   status:
                     type: integer
                     example: 200
-  /order/{orderId}/reject:
-    post:
-      summary: Reject an order
-      description: Reject an order with a given reason
+  /order/{id}:
+    get:
+      summary: Get details of an order by ID
+      description: Retrieve detailed information of an order using its unique ID.
       tags:
         - Order
       parameters:
-        - name: orderId
+        - name: id
           in: path
           required: true
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                reason:
-                  type: string
-                  example: 'Out of stock'
+          description: The unique identifier of the order.
       responses:
         '200':
-          description: Order rejected successfully
+          description: Successfully retrieved the order details
           content:
             application/json:
               schema:
@@ -846,64 +1028,57 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Order rejected successfully'
-                  status:
-                    type: integer
-                    example: 200
-  /order/reject:
-    get:
-      summary: Get rejected orders
-      description: Retrieve a list of all rejected orders
-      tags:
-        - Order
-      responses:
-        '200':
-          description: Rejected orders retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Rejected Orders found'
+                    example: 'Order found'
                   status:
                     type: integer
                     example: 200
                   data:
                     type: object
                     properties:
-                      rejectedOrders:
+                      _id:
+                        type: string
+                        example: '67f20c3457d0f17994571e3c'
+                      tableId:
+                        type: string
+                        example: '67f20aaa94cc340a4bad5d3d'
+                      status:
+                        type: string
+                        example: 'DONE'
+                      messages:
+                        type: array
+                        items:
+                          type: string
+                        example: []
+                      items:
                         type: array
                         items:
                           type: object
                           properties:
+                            foodId:
+                              type: string
+                              example: '67f20c1557d0f17994571e28'
+                            price:
+                              type: number
+                              example: 48000
+                            quantity:
+                              type: integer
+                              example: 4
                             _id:
                               type: string
-                              example: '67d53a2dc92203568eb70a01'
-                            orderId:
-                              type: string
-                              example: '67d5388bc92203568eb709b4'
-                            reason:
-                              type: string
-                              example: 'Customer canceled the order'
-                            createdAt:
-                              type: string
-                              format: date-time
-                              example: '2025-03-15T08:30:25.638Z'
-                            updatedAt:
-                              type: string
-                              format: date-time
-                              example: '2025-03-15T08:30:25.638Z'
-
-    delete:
-      summary: Delete all rejected orders
-      description: Remove all rejected orders
-      tags:
-        - Order
-      responses:
-        '200':
-          description: All rejected orders deleted successfully
+                              example: '67f20d7457d0f1799457202a'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-04-06T05:08:04.588Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-04-06T05:21:00.115Z'
+                      __v:
+                        type: integer
+                        example: 0
+        '404':
+          description: Order not found
           content:
             application/json:
               schema:
@@ -911,66 +1086,33 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'All rejected orders deleted successfully'
-                  status:
-                    type: integer
-                    example: 200
-  /order/{billId}/{orderId}/reorder:
-    patch:
-      summary: Reorder a rejected order
-      description: Reorder an order that was previously rejected
+                    example: 'Order not found'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+    delete:
+      summary: Delete a specific order by ID
+      description: Remove a specific order by its ID and mark the associated table as available.
       tags:
         - Order
       parameters:
-        - name: billId
+        - name: id
           in: path
           required: true
+          description: The ID of the order to delete.
           schema:
             type: string
-        - name: orderId
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                items:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      food:
-                        type: object
-                        properties:
-                          _id:
-                            type: string
-                            example: '67c1c58322cabb5605f05ba0'
-                          price:
-                            type: number
-                            example: 12.99
-                      tableId:
-                        type: string
-                        example: '67bc37f21576d17f62cf49bb'
-                      quantity:
-                        type: integer
-                        example: 2
-                voucher:
-                  type: object
-                  properties:
-                    code:
-                      type: string
-                      example: 'DISCOUNT10'
-                message:
-                  type: string
-                  example: 'Please serve quickly'
+            example: '67f20c3457d0f17994571e3c'
       responses:
         '200':
-          description: Order reordered successfully
+          description: Order deleted successfully and table marked as available.
           content:
             application/json:
               schema:
@@ -978,10 +1120,24 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Order reordered successfully'
+                    example: 'Order deleted successfully'
                   status:
                     type: integer
                     example: 200
+        '404':
+          description: Order not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Order not found'
+                  status:
+                    type: integer
+                    example: 404
+
   /order/{orderId}/status:
     post:
       summary: Update order status
@@ -1019,7 +1175,7 @@ paths:
                   status:
                     type: integer
                     example: 200
-  /order/bill/{billId}/order/{orderId}:
+  /order/{orderId}/{billId}/:
     patch:
       summary: Update an order
       description: Modify an existing order
@@ -1117,7 +1273,8 @@ paths:
                             items:
                               type: string
                             example: ['Please serve quickly']
-  /order/bill/{billId}/order/{orderId}/payment:
+  /order/{orderId}/{billId}/payment:
+
     patch:
       summary: Complete an order payment
       description: Mark an order as completed and set the corresponding table as available.
@@ -1217,7 +1374,6 @@ paths:
                           type: string
                           format: date-time
                           example: '2025-03-15T08:21:25.638Z'
-
     delete:
       summary: Delete all bills
       description: Remove all bills from the system.
@@ -1238,6 +1394,184 @@ paths:
                   status:
                     type: integer
                     example: 200
+    post:
+      summary: Create a new bill
+      description: Create a new bill associated with an order and voucher (optional).
+      tags:
+        - Bill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                totalPrice:
+                  type: number
+                  example: 46000
+                orderId:
+                  type: string
+                  example: '67f20f471bac03bc08b742d6'
+                isPaid:
+                  type: boolean
+                  example: true
+                voucherId:
+                  type: string
+                  example: '67bebd626e1de48060da6adb'
+      responses:
+        '201':
+          description: Bill created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Bill created successfully'
+                  status:
+                    type: integer
+                    example: 201
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67f20f471bac03bc08b742dd'
+                      totalPrice:
+                        type: number
+                        example: 46000
+                      orderId:
+                        type: string
+                        example: '67f20f471bac03bc08b742d6'
+                      isPaid:
+                        type: boolean
+                        example: true
+                      voucherId:
+                        type: string
+                        example: '67bebd626e1de48060da6adb'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-04-06T05:21:11.491Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-04-06T05:23:24.466Z'
+                      __v:
+                        type: integer
+                        example: 0
+  /bill/{id}:
+    get:
+      summary: Get a bill by ID
+      description: Retrieve a bill by its ID, including the associated order and voucher details.
+      tags:
+        - Bill
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the bill to retrieve.
+          schema:
+            type: string
+            example: '67f20c3457d0f17994571e3c'
+      responses:
+        '200':
+          description: Bill retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Bill found'
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67f20c3457d0f17994571e3c'
+                      totalPrice:
+                        type: number
+                        example: 46000
+                      orderId:
+                        type: string
+                        example: '67f20f471bac03bc08b742d6'
+                      isPaid:
+                        type: boolean
+                        example: true
+                      voucherId:
+                        type: string
+                        example: '67bebd626e1de48060da6adb'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-04-06T05:21:11.491Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-04-06T05:23:24.466Z'
+                      __v:
+                        type: integer
+                        example: 0
+        '404':
+          description: Bill not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Bill not found'
+                  status:
+                    type: integer
+                    example: 404
+    delete:
+      summary: Delete a bill by ID
+      description: Remove a bill by its ID.
+      tags:
+        - Bill
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the bill to delete.
+          schema:
+            type: string
+            example: '67f20f471bac03bc08b742dd'
+      responses:
+        '200':
+          description: Bill deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Bill deleted successfully'
+                  status:
+                    type: integer
+                    example: 200
+        '404':
+          description: Bill not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Bill not found'
+                  status:
+                    type: integer
+                    example: 404
+
   /voucher:
     post:
       summary: Create a new voucher
@@ -1353,3 +1687,258 @@ paths:
                         isActive:
                           type: boolean
                           example: true
+  /voucher/{id}:
+    get:
+      summary: Get voucher by ID
+      description: Retrieve the voucher details by its ID.
+      tags:
+        - Voucher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the voucher to retrieve.
+          schema:
+            type: string
+            example: '67f20f471bac03bc08b742dd'
+      responses:
+        '200':
+          description: Voucher retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Voucher found'
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67f20f471bac03bc08b742dd'
+                      name:
+                        type: string
+                        example: 'Summer Sale'
+                      description:
+                        type: string
+                        example: 'Voucher for 50% off in summer sale'
+                      type:
+                        type: string
+                        enum: ['FIXED_AMOUNT', 'PERCENTAGE']
+                        example: 'PERCENTAGE'
+                      code:
+                        type: string
+                        example: 'SUMMER50'
+                      value:
+                        type: number
+                        example: 50
+                      startDate:
+                        type: string
+                        format: date-time
+                        example: '2025-06-01T00:00:00Z'
+                      endDate:
+                        type: string
+                        format: date-time
+                        example: '2025-08-31T23:59:59Z'
+                      maxUsage:
+                        type: integer
+                        example: 100
+                      usageCount:
+                        type: integer
+                        example: 50
+                      maxUsuagePerUser:
+                        type: integer
+                        example: 1
+                      isActive:
+                        type: boolean
+                        example: true
+        '404':
+          description: Voucher not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Voucher not found'
+                  status:
+                    type: integer
+                    example: 404
+    delete:
+      summary: Delete voucher by ID
+      description: Remove a voucher from the system by its ID.
+      tags:
+        - Voucher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the voucher to delete.
+          schema:
+            type: string
+            example: '67f20f471bac03bc08b742dd'
+      responses:
+        '200':
+          description: Voucher deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Voucher deleted successfully'
+                  status:
+                    type: integer
+                    example: 200
+        '404':
+          description: Voucher not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Voucher not found'
+                  status:
+                    type: integer
+                    example: 404
+    patch:
+      summary: Update voucher by ID
+      description: Update the details of a voucher, such as its name, description, or value.
+      tags:
+        - Voucher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the voucher to update.
+          schema:
+            type: string
+            example: '67f20f471bac03bc08b742dd'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Summer Sale'
+                description:
+                  type: string
+                  example: 'Voucher for 50% off in summer sale'
+                type:
+                  type: string
+                  enum: ['FIXED_AMOUNT', 'PERCENTAGE']
+                  example: 'PERCENTAGE'
+                value:
+                  type: number
+                  example: 50
+                startDate:
+                  type: string
+                  format: date-time
+                  example: '2025-06-01T00:00:00Z'
+                endDate:
+                  type: string
+                  format: date-time
+                  example: '2025-08-31T23:59:59Z'
+                maxUsage:
+                  type: integer
+                  example: 100
+                maxUsuagePerUser:
+                  type: integer
+                  example: 1
+                isActive:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Voucher updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Voucher updated successfully'
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '67f20f471bac03bc08b742dd'
+                      name:
+                        type: string
+                        example: 'Summer Sale'
+                      description:
+                        type: string
+                        example: 'Voucher for 50% off in summer sale'
+                      type:
+                        type: string
+                        enum: ['FIXED_AMOUNT', 'PERCENTAGE']
+                        example: 'PERCENTAGE'
+                      code:
+                        type: string
+                        example: 'SUMMER50'
+                      value:
+                        type: number
+                        example: 50
+                      startDate:
+                        type: string
+                        format: date-time
+                        example: '2025-06-01T00:00:00Z'
+                      endDate:
+                        type: string
+                        format: date-time
+                        example: '2025-08-31T23:59:59Z'
+                      maxUsage:
+                        type: integer
+                        example: 100
+                      usageCount:
+                        type: integer
+                        example: 50
+                      maxUsuagePerUser:
+                        type: integer
+                        example: 1
+                      isActive:
+                        type: boolean
+                        example: true
+        '404':
+          description: Voucher not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Voucher not found'
+                  status:
+                    type: integer
+                    example: 404
+        '400':
+          description: Invalid input data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid input data'
+                  status:
+                    type: integer
+                    example: 400

@@ -23,6 +23,12 @@ class FoodService {
     return new OkResponse('Successfully!', foods);
   }
 
+  async getById(id: Types.ObjectId) {
+    const food = await foodModel.findById(id);
+    if (!food) throw new NotFoundError('Food not found');
+    return new OkResponse('Successfully!', food);
+  }
+
   async updateFoodAvailability(id: string, isAvailable: boolean) {
     const food = await foodModel.findByIdAndUpdate(
       id,
