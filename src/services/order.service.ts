@@ -259,6 +259,7 @@ class OrderService {
       if (items.length === 0) {
         throw new BadRequestError('No items to order');
       }
+
       const order = (await orderModel.findOne({ _id: orderId })) as Order;
 
       await orderModel.findOneAndUpdate(
@@ -280,6 +281,7 @@ class OrderService {
             quantity: item.quantity,
           })),
           status: ORDER_STATUS.ORDERED,
+
           $push: {
             messages: message,
           },
