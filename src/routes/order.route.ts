@@ -7,6 +7,10 @@ import { OrderValidation } from '@/validations/order.validation';
 
 const router = express.Router();
 
+router.get('/', asyncHandler(orderController.get));
+
+router.get('/:id', asyncHandler(orderController.getById));
+
 router.post(
   '/',
   validationRequest(OrderValidation.insertOrderSchema()),
@@ -14,20 +18,12 @@ router.post(
 );
 
 router.post(
-  '/:orderId/reject',
+  '/:orderId',
   validationRequest(OrderValidation.rejectOrderSchema()),
   asyncHandler(orderController.rejectOrder),
 );
 
-router.get('/reject', asyncHandler(orderController.getRejectedOrder));
-
 router.delete('/reject', asyncHandler(orderController.deleteRejectedOrder));
-
-router.patch(
-  '/:billId/:orderId/reorder',
-  validationRequest(OrderValidation.updateOrderSchema()),
-  asyncHandler(orderController.reOrder),
-);
 
 router.post(
   '/:orderId/status',
@@ -36,18 +32,16 @@ router.post(
 );
 
 router.patch(
-  '/bill/:billId/order/:orderId',
+  '/:orderId/:billId/',
   validationRequest(OrderValidation.updateOrderSchema()),
   asyncHandler(orderController.updateOrder),
 );
 
 router.patch(
-  '/bill/:billId/order/:orderId/payment',
+  '/:orderId/:billId/payment',
   asyncHandler(orderController.CompleteOrder),
 );
 
-router.get('/', asyncHandler(orderController.get));
-
-router.delete('/', asyncHandler(orderController.delete));
+router.delete('/:id', asyncHandler(orderController.deleteById));
 
 export default router;

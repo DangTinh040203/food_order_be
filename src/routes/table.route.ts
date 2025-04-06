@@ -8,6 +8,7 @@ import { TableValidation } from '@/validations/table.validation';
 const router = express.Router();
 
 router.get('/', asyncHandler(tableController.get));
+router.get('/:id', asyncHandler(tableController.getById));
 
 router.patch(
   '/:id',

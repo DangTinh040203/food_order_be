@@ -12,6 +12,11 @@ class FoodController {
     res.send(await foodService.get(req));
   }
 
+  async getById(req: Request, res: Response) {
+    const id = convertObjectId(req.params.id);
+    res.send(await foodService.getById(id));
+  }
+
   async insertFood(req: Request, res: Response) {
     const payload: Omit<Food, 'id'> = req.body;
     res.send(await foodService.insertFood(payload));
