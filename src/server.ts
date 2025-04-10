@@ -58,7 +58,7 @@ class Server {
   }
 
   private configureRoutes() {
-    this.app.use(router);
+    this.app.use('/v1', router);
   }
 
   private configureErrorHandling() {
