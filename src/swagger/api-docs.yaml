@@ -195,6 +195,7 @@ paths:
                         format: date-time
                         example: '2025-03-08T16:51:19.569Z'
   /v1/food/{id}:
+
     get:
       summary: Get details of a food item by ID
       description: Retrieve detailed information of a food item using its unique ID.
