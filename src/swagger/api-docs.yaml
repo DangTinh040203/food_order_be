@@ -7,7 +7,7 @@ servers:
   - url: http://localhost:3000
 paths:
   # FOOD ENDPOINTS
-  /food:
+  /v1/food:
     get:
       summary: Get a list of foods with pagination
       description: Retrieve a paginated list of foods, sorted by creation date in descending order.
@@ -194,7 +194,8 @@ paths:
                         type: string
                         format: date-time
                         example: '2025-03-08T16:51:19.569Z'
-  /food/{id}:
+  /v1/food/{id}:
+
     get:
       summary: Get details of a food item by ID
       description: Retrieve detailed information of a food item using its unique ID.
@@ -375,7 +376,7 @@ paths:
                   message:
                     type: string
                     example: 'Food deleted successfully'
-  /food/thumbnail:
+  /v1/food/thumbnail:
     post:
       summary: Upload a food thumbnail
       description: Upload an image file as a food thumbnail.
@@ -409,7 +410,7 @@ paths:
                         type: string
                         example: 'https://cdn.example.com/thumbnails/image.jpg'
 
-  /table:
+  /v1/table:
     get:
       summary: Get list of tables
       description: Retrieve a paginated list of tables.
@@ -563,7 +564,7 @@ paths:
                       __v:
                         type: integer
                         example: 0
-  /table/{id}:
+  /v1/table/{id}:
     get:
       summary: Get details of a table by ID
       description: Retrieve detailed information of a table using its unique ID.
@@ -737,7 +738,7 @@ paths:
                   message:
                     type: string
 
-  /order:
+  /v1/order:
     post:
       summary: Create a new order
       description: Place a new order with items, table, and an optional voucher.
@@ -1005,7 +1006,7 @@ paths:
                   status:
                     type: integer
                     example: 200
-  /order/{id}:
+  /v1/order/{id}:
     get:
       summary: Get details of an order by ID
       description: Retrieve detailed information of an order using its unique ID.
@@ -1138,7 +1139,7 @@ paths:
                     type: integer
                     example: 404
 
-  /order/{orderId}/status:
+  /v1/order/{orderId}/status:
     post:
       summary: Update order status
       description: Change the status of an order
@@ -1175,7 +1176,7 @@ paths:
                   status:
                     type: integer
                     example: 200
-  /order/{orderId}/{billId}/:
+  /v1/order/{orderId}/{billId}/:
     patch:
       summary: Update an order
       description: Modify an existing order
@@ -1273,8 +1274,7 @@ paths:
                             items:
                               type: string
                             example: ['Please serve quickly']
-  /order/{orderId}/{billId}/payment:
-
+  /v1/order/{orderId}/{billId}/payment:
     patch:
       summary: Complete an order payment
       description: Mark an order as completed and set the corresponding table as available.
@@ -1325,7 +1325,7 @@ paths:
                     type: string
                     example: Something went wrong!
 
-  /bill:
+  /v1/bill:
     get:
       summary: Get all bills
       description: Retrieve a list of all bills in the system.
@@ -1461,7 +1461,7 @@ paths:
                       __v:
                         type: integer
                         example: 0
-  /bill/{id}:
+  /v1/bill/{id}:
     get:
       summary: Get a bill by ID
       description: Retrieve a bill by its ID, including the associated order and voucher details.
@@ -1572,7 +1572,7 @@ paths:
                     type: integer
                     example: 404
 
-  /voucher:
+  /v1/voucher:
     post:
       summary: Create a new voucher
       description: Inserts a new voucher into the system.
@@ -1687,7 +1687,7 @@ paths:
                         isActive:
                           type: boolean
                           example: true
-  /voucher/{id}:
+  /v1/voucher/{id}:
     get:
       summary: Get voucher by ID
       description: Retrieve the voucher details by its ID.
