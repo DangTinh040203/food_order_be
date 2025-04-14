@@ -195,7 +195,6 @@ paths:
                         format: date-time
                         example: '2025-03-08T16:51:19.569Z'
   /v1/food/{id}:
-
     get:
       summary: Get details of a food item by ID
       description: Retrieve detailed information of a food item using its unique ID.
@@ -1355,7 +1354,7 @@ paths:
                           type: string
                           format: date-time
                           example: '2025-03-15T08:21:25.638Z'
-    
+
     post:
       summary: Create a new bill
       description: Create a new bill associated with an order and voucher (optional).
