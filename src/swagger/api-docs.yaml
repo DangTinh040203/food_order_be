@@ -736,6 +736,43 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: tables deleted successfully
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '6619f1d43b35df4d7f3f0e93'
+                      numericalOrder:
+                        type: integer
+                        example: 1
+                      isAvailable:
+                        type: boolean
+                        example: true
+                      currentNumOfPeople:
+                        type: integer
+                        example: 2
+                      maxNumOfPeople:
+                        type: integer
+                        example: 4
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2024-04-13T14:30:00.000Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2024-04-13T15:00:00.000Z'
+        '404':
+          description: Table not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tables not found
 
   /v1/order:
     post:
