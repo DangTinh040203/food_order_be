@@ -987,25 +987,6 @@ paths:
                   message:
                     type: string
                     example: 'Internal server error'
-    delete:
-      summary: Delete all orders
-      description: Remove all orders and mark tables as available
-      tags:
-        - Order
-      responses:
-        '200':
-          description: Orders deleted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'All orders deleted'
-                  status:
-                    type: integer
-                    example: 200
   /v1/order/{id}:
     get:
       summary: Get details of an order by ID
@@ -1374,26 +1355,7 @@ paths:
                           type: string
                           format: date-time
                           example: '2025-03-15T08:21:25.638Z'
-    delete:
-      summary: Delete all bills
-      description: Remove all bills from the system.
-      operationId: deleteAllBills
-      tags:
-        - Bill
-      responses:
-        '200':
-          description: Confirmation of deletion.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'All bills deleted'
-                  status:
-                    type: integer
-                    example: 200
+    
     post:
       summary: Create a new bill
       description: Create a new bill associated with an order and voucher (optional).

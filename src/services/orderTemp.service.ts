@@ -8,11 +8,6 @@ class OrderTempService {
       ? new OkResponse('OrderTemp found', orderTemp)
       : new OkResponse('No OrderTemp found');
   }
-
-  async delete() {
-    await orderTempModel.deleteMany();
-    return new OkResponse('All OrderTemp deleted');
-  }
 }
 
 const orderTempService = new OrderTempService();
