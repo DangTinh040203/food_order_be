@@ -7,6 +7,5 @@ const router = express.Router();
 
 router.get('/', asyncHandler(orderTempController.get));
 
-router.delete('/', asyncHandler(orderTempController.delete));
 
 export default router;

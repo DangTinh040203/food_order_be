@@ -267,6 +267,7 @@ class OrderService {
             quantity: item.quantity,
           })),
           status: ORDER_STATUS.ORDERED,
+
           $push: {
             messages: message,
           },
