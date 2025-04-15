@@ -195,7 +195,6 @@ paths:
                         format: date-time
                         example: '2025-03-08T16:51:19.569Z'
   /v1/food/{id}:
-
     get:
       summary: Get details of a food item by ID
       description: Retrieve detailed information of a food item using its unique ID.
@@ -737,6 +736,43 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: tables deleted successfully
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '6619f1d43b35df4d7f3f0e93'
+                      numericalOrder:
+                        type: integer
+                        example: 1
+                      isAvailable:
+                        type: boolean
+                        example: true
+                      currentNumOfPeople:
+                        type: integer
+                        example: 2
+                      maxNumOfPeople:
+                        type: integer
+                        example: 4
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2024-04-13T14:30:00.000Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2024-04-13T15:00:00.000Z'
+        '404':
+          description: Table not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tables not found
 
   /v1/order:
     post:
@@ -987,25 +1023,6 @@ paths:
                   message:
                     type: string
                     example: 'Internal server error'
-    delete:
-      summary: Delete all orders
-      description: Remove all orders and mark tables as available
-      tags:
-        - Order
-      responses:
-        '200':
-          description: Orders deleted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'All orders deleted'
-                  status:
-                    type: integer
-                    example: 200
   /v1/order/{id}:
     get:
       summary: Get details of an order by ID
@@ -1374,26 +1391,7 @@ paths:
                           type: string
                           format: date-time
                           example: '2025-03-15T08:21:25.638Z'
-    delete:
-      summary: Delete all bills
-      description: Remove all bills from the system.
-      operationId: deleteAllBills
-      tags:
-        - Bill
-      responses:
-        '200':
-          description: Confirmation of deletion.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'All bills deleted'
-                  status:
-                    type: integer
-                    example: 200
+
     post:
       summary: Create a new bill
       description: Create a new bill associated with an order and voucher (optional).
