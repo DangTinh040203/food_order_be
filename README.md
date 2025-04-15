@@ -1,6 +1,4 @@
 # Food Order Backend
-# Test CICD
-
 ## Getting Started
 
 ### Prerequisites
