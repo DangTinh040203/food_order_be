@@ -12,7 +12,7 @@ Ensure you have the following installed:
 
 ### Installation
 
-1. Clone the repository:
+1. Clone the repository
 
    ```sh
    git clone https://github.com/your-repo/project.git
